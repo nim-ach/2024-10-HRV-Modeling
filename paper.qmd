@@ -1,0 +1,264 @@
+---
+title: ""
+format: 
+  docx:
+    reference-doc: "ref.docx"
+    fig-format: pdf
+    fig-asp: 0.75
+    fig-width: 7
+bibliography: "misc/ref.bib"
+csl: "misc/frontiers-in-physiology.csl"
+editor_options: 
+  chunk_output_type: console
+execute: 
+  echo: false
+  warning: false
+  error: false
+---
+
+**Title**: Modeling Nonlinear R-R Interval Dynamics during Exercise: A Novel Logistic Approach to Cardiovascular Recovery.
+
+**Authors**: Matías Castillo-Aguilar^1,2^, [...], Cristian Núñez-Espinoza^1,3^\*.
+
+::: {custom-style="Afiliation"}
+^1^ Centro Asistencial Docente e Investigación (CADI-UMAG), University of Magallanes, Punta Arenas, Chile.
+
+^2^ Kinesiology Department, University of Magallanes, Punta Arenas, Chile.
+
+^3^ School of Medicine, University of Magallanes, Punta Arenas, Chile.
+:::
+
+### \*Correspondence: 
+
+Cristian Núñez-Espinosa, School of Medicine, University of Magallanes, Punta Arenas, Chile. Centro Asistencial de Docencia e Investigación CADI-UMAG, Chile. e-mail: [cristian.nunez\@umag.cl](mailto:cristian.nunez@umag.cl). Address: Avenida Bulnes 01855, Box 113-D. Phone: +56 61 2201411.
+
+{{< pagebreak >}}
+
+## Abstract 
+
+**Objective**: [...]. **Methods**: [...]. **Results**: [...]. **Conclusion**: [...].
+
+**Keywords**: [...].
+
+{{< pagebreak >}}
+
+# Introduction 
+
+Current research has delved deep into understanding the underlying mechanisms behind cardiac autonomic dynamics in response to exercise, and how this could be related to health-related quality of life and an increased risk of cardiovascular diseases. Hence, shedding light on the autonomic mechanics can provide insights into the role play between modifying parameters of exercise-induced response and how to optimize it to achieve optimal effects in both young and older individuals.
+
+The study of R-R intervals (RRi) in response to exercise is a key research area within this context, given its significant implications for cardiovascular health, athletic performance, and overall physiological adaptation [@kristal1995heart; @thayer2010relationship; @dong2016role; @lundstrom2023practices]. Unlike measures of heart rate variability (HRV), which summarize autonomic activity over time, RRi offers a more direct and granular view of the heart's electrical activity during or immediately after an exercise test in older individuals [@mongin2022hrv; @castillo2023validity; @mabe2024associations]. Analyzing the temporal dynamics of RRi (i.e., the time between successive heartbeats) provides invaluable insights into how the cardiovascular system behaves to and recovers from physical stressors, such as fatigue after competition or an intense exercise test [@castillo2021cardiac; @eser2022exercise].
+
+Understanding these fluctuations is particularly relevant during dynamic periods of exercise when the autonomic nervous system (ANS) shifts between parasympathetic withdrawal and sympathetic activation [@boettger2010heart]. Modeling RRi dynamics, rather than relying on broader HRV metrics, allows researchers to focus on the direct physiological markers of autonomic adaptation to stress [@hautala2003short]. This detailed perspective is critical for identifying recovery patterns and understanding cardiovascular reactivity in athletes and individuals with varied fitness levels [@mongin2022hrv].
+
+Despite the importance of RRi analysis, modeling their nonlinear behavior during and after exercise presents significant challenges. Traditional approaches, such as linear regression and time-series analysis, often fail to capture the intricate transitions in RRi, especially during intense physical exertion and recovery. This limitation is due to the non-linear and non-stationary nature of HRV [@gronwald2019effects]. Linear models, which oversimplify these transitions, are prone to misrepresent the actual physiological processes. More advanced non-linear models have begun to address this issue, yet many focus on overall HRV parameters rather than directly modeling the RRi [@gronwald2019non].
+
+Non-linear models have gained increasing attention for analyzing the complex dynamics of RRi, especially during exercise. These models offer a more comprehensive understanding of HRV compared to traditional linear approaches [@wu2003nonlinear]. Recent studies have proposed exponential decay models to describe RRi recovery, while others have employed logistic functions to depict the gradual return to baseline following periods of heightened physical stress [@molkkari2020online; @gronwald2019non]. These models offer an advantage over traditional HRV analyses by providing a more detailed understanding of the cardiovascular system's response to exercise. However, despite these advancements, few models explicitly target real-time RRi dynamics, and fewer still incorporate the variability introduced by individual physiological differences, such as fitness level, autonomic balance, and exercise intensity [@kanniainen2023estimation].
+
+Given the unique characteristics of RRi, their direct relationship with cardiac electrical activity, and responsiveness to autonomic changes, there is a compelling need for a model that captures their non-linear fluctuations during exercise and recovery. Such a model would offer a more biologically relevant representation of the heart’s behavior than the broader HRV indices typically used in research [@bacopoulou2021entropy].
+
+Hence, the primary objective of this paper is to present a novel non-linear model that characterizes the fluctuations in RRi during exercise and recovery. This model is specifically designed to reflect the complex, real-time changes in RRi, offering a more precise understanding of the physiological processes underlying cardiovascular adaptation to exercise. By focusing exclusively on RRi, the model can deliver insights directly applicable to athletic training regimens, recovery protocols, and clinical practices aimed at improving cardiovascular health. The proposed model seeks to bridge the gap between existing modeling frameworks and the physiological reality of RRi dynamics during exercise.
+
+# Methods
+
+```{r config}
+library(data.table)
+library(ggplot2)
+library(brms)
+```
+
+## Model Specification
+
+The mathematical model proposed to characterize the RRi response to exercise and recovery is defined by @eq-main-model.
+
+$$
+\begin{aligned}
+\text{RRi}(t) = \alpha + \frac{\beta}{1 + e^{\lambda(t - \tau)}} + \frac{-\beta \cdot c}{1 + e^{\phi(t - \tau - \delta)}}
+\end{aligned}
+$${#eq-main-model}
+
+This model includes two logistic functions representing the RRi dynamics across exercise and recovery phases. The first logistic term models the decrease in RRi during exercise, where the parameter $\beta$ denotes the magnitude of this decline. The rate of decline is governed by $\lambda$, while $\tau$ represents the onset of the RRi decrease or the time at which the physiological shift begins.
+
+The second logistic term accounts for RRi recovery post-exercise. Here, $c$ scales the magnitude of recovery relative to the initial decline represented by $\beta$, effectively capturing the proportion of the decline regained during recovery. The rate at which RRi returns to baseline is controlled by $\phi$, and $\delta$ indicates the lag following the cessation of exercise, marking the beginning of recovery.
+
+This logistic structure is well-suited to modeling the RRi dynamics, providing a smooth, continuous transition for the decline and recovery phases. Logistic growth functions are particularly effective in physiological modeling contexts, where transitions (e.g., rest to exercise or exercise to recovery) occur gradually and non-linearly. Compared to conditional models, which may introduce abrupt transitions, this model is designed to minimize discontinuities, thus offering a realistic representation of RRi responses without artifacts.
+
+## Sensitivity to model parameters
+
+To assess the sensitivity of model parameters in influencing RRi over time, we implemented a Sobol sensitivity analysis using Monte Carlo simulations. To compute Sobol indices, a total of 500 Monte Carlo simulations were conducted, with each simulation involving 500 randomly sampled parameter sets (250,000 model runs in total). For each set of parameters, RR intervals were calculated at each time point $t$ across a range from 0 to 20 minutes at intervals of 0.1 minutes. The resulting Sobol indices provided a measure of the contribution of each parameter to the variance in RR intervals at each time point.
+
+The first-order Sobol index for each parameter was computed by isolating the variance attributable to each parameter while averaging over the others. To achieve this, we perturbed each parameter individually while holding all other parameters at their average values across the samples. The proportion of variance explained by each parameter at each time point was calculated by dividing the variance of the perturbed model outputs by the total variance, yielding time-dependent Sobol indices. The selected parameter ranges, provided in [Table 1](#tbl-sens-params), reflect a 50% variation in both directions from a reference value for each parameter.
+
+|  | $\alpha$| $\beta$| $c$| $\lambda$| $\phi$| $\tau$| $\delta$|
+|----|--------:|-------:|----:|-------:|-------:|------:|--------:|
+|     x 0.5 |  400| -200| 0.5| -1.151| -0.602| 2.5| 1|
+| Reference |  800| -400| 1.0| -2.303| -1.203|   5| 2|
+|     x 1.5 | 1200| -600| 1.5| -3.454| -1.806| 7.5| 3|
+
+[**Table 1**]{#tbl-sens-params}. Parameter ranges for sensitivity analysis to be used as the limits to sample from uniform distribution and designed to evaluate model response to variability. Each parameter's range reflects a ±50% variation from its reference value. It is worth noting that reference values for $\lambda$ and $\phi$ parameters were set considering a reference rate of 90% and 70% change per minute in the original scale of these parameters.
+
+## Usage of real-world RRi data
+
+To further assess the performance and applicability of the proposed model, real-world RRi data were analyzed in addition to the synthetic data generated through simulation. This dataset was derived from a cohort participating in the FONDECYT Project No. 11220116, funded by the Chilean National Association of Research and Development (ANID). Ethical approval was granted by the Ethics Committee of the University of Chile (ACTA No. 029-18/05/2022) and the Ethics Committee of the University of Magallanes (No. 008/SH/2022).
+
+The dataset consisted of 272 participants who underwent a validated exercise protocol encompassing rest, exercise, and recovery phases within a single, continuous measurement session [@castillo2023validity]. Continuous heart rate data, including RRi, were collected using the Polar Team2 system (Polar®) application, which is capable of capturing dynamic fluctuations associated with varying exercise intensities and recovery.
+
+Preprocessing steps were conducted to remove artifacts and ectopic heartbeats, with less than 3% of data excluded following established guidelines [@malik1996heart]. The preprocessed RRi data were then aggregated into time intervals to facilitate analysis, allowing the examination of acute exercise responses as well as post-exercise recovery patterns.
+
+This real-world dataset provided a critical context for validating the model’s predictive capability against observed physiological responses, offering a robust foundation for understanding RRi dynamics under conditions of physical activity.
+
+## Parameter Estimation
+
+Parameter estimation was performed using Hamiltonian Monte Carlo (HMC) with the No-U-Turn Sampler (NUTS) to explore the parameter space. This method is suitable for high-dimensional spaces and utilizes gradient information for efficient sampling. The parameters $\alpha$, $\beta$, $c$, $\lambda$, $\phi$, $\tau$, and $\delta$ were estimated by sampling from the posterior distribution, which was constructed from observed RRi data and model predictions. The Bayesian framework allows the incorporation of prior distributions for parameters, enhancing the reliability of the estimates. 
+
+The priors were selected based on physiological constraints and are detailed in @eq-priors.
+
+$$
+\begin{aligned} 
+\alpha &\sim \mathcal{N}(850, 50) \text{ with } \alpha \geq 0 \\
+\beta &\sim \mathcal{N}(-400, 50) \text{ with } \beta \leq 0 \\
+c &\sim \mathcal{N}(1, 0.2) \text{ with } c \geq 0 \\
+\lambda &\sim \mathcal{N}(-3, 3) \text{ with } \lambda \leq 0 \\
+\phi &\sim \mathcal{N}(-3, 3) \text{ with } \phi \leq 0 \\
+\tau &\sim \mathcal{N}(5, 0.5) \text{ with } \tau \geq 0 \\
+\delta &\sim \mathcal{N}(5, 0.5) \text{ with } \delta \geq 0
+\end{aligned}
+$$ {#eq-priors}
+
+Simulated RRi dynamics based on the prior parameter distributions are shown in [Figure 1](#fig-prior-sim).
+
+![](figures/prior-model.pdf)
+
+[**Figure 1**]{#fig-prior-sim}. Predicted RRi response to exercise, illustrating uncertainty in model parameters from the prior distribution. Shaded areas represent 95%, 80%, and 60% quantile CI.
+
+The gradient of the log-likelihood function for each parameter was computed during estimation using the brms R package, which employs the Stan probabilistic programming language. Convergence of the HMC chains was evaluated using the Gelman-Rubin diagnostic and trace plots to ensure reliable parameter estimates. This quantification of uncertainty is essential for assessing the stability of parameter estimates, particularly in the presence of noisy RRi data.
+
+The fitting process utilized four Markov Chain Monte Carlo (MCMC) chains, each consisting of 12,500 iterations with a burn-in period of 5,000 iterations, resulting in a total of 30,000 post-warmup samples.
+
+## Model Evaluation
+
+The model's predictive performance was assessed using approximate leave-one-out (LOO) cross-validation for Bayesian models, utilizing Pareto-smoothed importance sampling. The primary evaluation metrics included root mean square error (RMSE) and mean absolute percentage error (MAPE). These metrics were selected for their capacity to quantify both absolute and relative errors, thereby providing a comprehensive assessment across the varying scales of RRi dynamics, including resting baseline, peak decline, and recovery.
+
+Also, residual analysis was conducted to evaluate the model’s accuracy in capturing RRi dynamics. Residuals were defined as the difference between observed and predicted RRi values. These residuals were analyzed for temporal structure and autocorrelation to ensure that no systematic patterns remained in the errors. This indicates that the model has sufficiently captured the underlying dynamics of the RRi response to exercise.
+
+# Results
+
+## Non-linear model and deterministic behaviour
+
+### RRi as a linear combination of logistic functions
+
+According to the proposed model in @eq-main-model, the dynamics of RRi in response to physical exertion can be represented as a linear combination of a baseline RRi $\alpha$ and two logistic functions, denoted as $f_1(t)$ and $f_2(t)$. The function $f_1(t)$ models the initial decay in RRi following the initiation of exercise while $f_2(t)$ characterizes the recovery phase after exercise cessation.
+
+The fundamental structure of both logistic functions can be expressed as:
+
+$$
+\begin{aligned}
+f(t) = \frac{a_1}{1 + e^{a_2(t - a_3)}}
+\end{aligned}
+$${#eq-logistic-structure}
+
+In this equation, $a_1$ represents the asymptotic value approached by the logistic function, which can be either positive (indicating an increase) or negative (indicating a decrease). For $f_1(t)$, this parameter is specified as $\beta$, indicating the absolute change in RRi at the onset of exercise. In contrast, for $f_2(t)$, $a_1$ is reparameterized as $-\beta \cdot c$, where $c$ denotes the proportion of change relative to the initial drop indicated by $\beta$. This reparameterization ensures that, after the initial decline, the second logistic function facilitates the return of RRi toward the baseline value $\alpha$.
+
+```{r}
+#| eval: false
+ln_to_perc <- function(ln) 1 - exp(ln)
+perc_to_ln <- function(perc) log(1 - perc)
+
+perc_to_ln(0.9) |> # log(1 - 0.9) ==> Log-scale
+  ln_to_perc()     # 1 - exp(-2.302585) ==> Percentage-change
+```
+
+The parameter $a_2$ defines the rate at which the specified increase or decrease occurs. This rate parameter is expressed on a logarithmic scale; to convert it to a percentage change per unit of time, it can be scaled as $1 - \exp(a_2)$. For instance, a 90% decrease per unit time corresponds to $a_2 = \log(1 - 0.9)$, resulting in an approximate value of -2.302585.
+
+The parameter $a_3$ serves as an activation threshold, causing the value within the exponential function, and consequently, the value in the denominator, to increase significantly until reaching $a_3$. Beyond this point, the denominator approaches 1, allowing the logistic function to attain the asymptotic level determined by the numerator. The behavior of the model constituents is illustrated in [Figure 2](#fig-linear-constituents).
+
+![](figures/model-constituents.pdf)
+
+[**Figure 2**]{#fig-linear-constituents}. The RRi dynamics in response to exercise are expressed as a linear combination of model constituents based on the baseline RRi $\alpha$ and two logistic functions, denoted $f_1(t)$ and $f_2(t)$, respectively.
+
+### Sensitivity to parameter variability
+
+Sobol sensitivity analysis reveals that the parameter $\alpha$ exerts the most substantial influence on the model's output, followed by parameters $c$ and $\delta$. In contrast, parameters $\beta$, $\lambda$, and $\phi$ demonstrate relatively minor effects, with some values crossing zero, indicating negligible influence within the tested parameter ranges.
+
+Individual perturbation of each parameter highlighted that RRi dynamics are sensitive to the baseline RRi parameter, $\alpha$. Conversely, the rate parameters for the initial decay during exercise, $\lambda$, and the recovery post-exercise, $\phi$, show lower sensitivity, suggesting that they are not primary sources of variation in predicted RRi trajectories when assessed in isolation. The results of the sensitivity analysis are illustrated in [Figure 3](#fig-sensitivity).
+
+![](figures/sobol-sensitivity.pdf)
+
+[**Figure 3**]{#fig-sensitivity}. Sensitivity analysis results illustrating the impact of parameter variability on model predictions. Shaded areas represent 95%, 80%, and 60% CI estimated from Monte Carlo samples.
+
+Despite the limited sensitivity of $\lambda$ and $\phi$ to mean RRi, these parameters play a pivotal role in determining the rate of change in RRi in response to physical exertion. Therefore, they can significantly affect RRi dynamics over time. The influence of these rate parameters on RRi fluctuations over time is depicted in [Figure 4](#fig-data-sim).
+
+![](figures/rate-sensitivity.pdf)
+
+[**Figure 4**]{#fig-data-sim}. Simulated RRi dynamics during exercise with varying $\lambda$ and $\phi$ rate parameters expressed as percent change per unit of time. In this simulation, the exercise-induced RRi drop occurs at 5 minutes ($\tau$), and cardiovascular recovery begins 2 minutes after exercise initiation ($\delta$). The model assumes a 90% recovery ($c$ = 0.90) of RRi values following a 400 ms drop ($\beta$) from a baseline of 800 ms ($\alpha$).
+
+## Model behavior to real RRi data
+
+### Sample characteristics
+
+The sample used to assess RRi dynamics consists of a group of 272 subjects selected from a local community of elderly individuals. The sample characteristics can be seen in [Table 2](#tbl-sample-characteristics)
+
+<!--- TABLE 2 HERE --->
+[**Table 2**]{#tbl-sample-characteristics}. Sample characteristics from which, continuous RRi monitoring data was collected during a rest-exercise-rest protocol. 
+
+```{r}
+data("rri_data")
+```
+
+Initial exploration of RRi dynamics using two-dimensional density kernel estimation (see [Figure 5](#fig-2d-kernel-density)) indicates a clear drop in RRi around the 5-7 minutes mark, associated with the exercise-induced cardiovascular stress. However, greater variability across individuals in post-exercise recovery can be observed .
+
+![](figures/2d-density-kernel.pdf)
+
+[**Figure 5**]{#fig-2d-kernel-density}. 2D kernel density of RRi dynamics over time from a sample of individuals subjected to a rest-exercise-rest protocol. Darker colors indicate greater probability density. The contrary can be said about lighter colors.
+
+<!---
+Interpretación de los parámetros ajustados: Explica los valores estimados de los parámetros 
+a, b, c, e, f, t0, y t1, y cómo se interpretan en términos fisiológicos.
+--->
+
+<!---
+Comparación con otros enfoques: Si es posible, compara el rendimiento del modelo no lineal con otros enfoques más simples, como modelos lineales o mixtos.
+--->
+
+# Discussion
+
+<!---
+Interpretación de los resultados: Discute cómo los resultados obtenidos apoyan la hipótesis de que el modelo no lineal es más adecuado para describir las fluctuaciones de la HRV en respuesta al ejercicio.
+--->
+
+<!---
+Implicaciones fisiológicas: Expón qué nos dice el modelo sobre los mecanismos de recuperación cardiovascular y su relevancia para la fisiología deportiva o la medicina.
+--->
+
+<!---
+Limitaciones: Menciona posibles limitaciones del modelo, como la necesidad de datos de alta calidad o la dificultad de interpretar algunos parámetros en ciertos contextos.
+--->
+
+<!---
+Futuras direcciones: Sugiere mejoras al modelo, posibles aplicaciones o nuevas líneas de investigación en el uso de enfoques no lineales para modelar respuestas fisiológicas.
+--->
+
+# Conclusion
+
+<!---
+Resumen de los hallazgos: Reitera brevemente los principales hallazgos y cómo el modelo puede ser útil en futuras investigaciones sobre HRV y la recuperación post-ejercicio.
+--->
+
+# Authors' Contributions
+
+Conceptualization, MC-A; Data curation, MC-A; Investigation, MC-A; Methodology, MC-A, NMD; Supervision, CN-E; Formal analysis, MC-A; Visualization, MC-A; Writing–original draft, MC-A, CN-E, [...]; Writing–review & editing, MC-A, CN-E, [...]. All authors have read and agreed to the published version of the manuscript.
+
+# Funding
+
+This research did not receive any funding.
+
+# Data Availability Statement
+
+The data supporting the conclusions of this article will be available from the authors without reservation.
+
+# Conflict of Interest
+
+The authors declare that this research was conducted without any commercial or financial relationships that could be construed as potential conflicts of interest.
+
+# References
+
+<div id="refs"></div>
