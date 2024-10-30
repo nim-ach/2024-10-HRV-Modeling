@@ -5,6 +5,7 @@
 library(ggplot2)
 library(brms)
 library(data.table)
+library(ggpubr)
 
 ## Custom functions ----
 
@@ -86,8 +87,8 @@ m_prior_only <- brm(
   family = gaussian(),
   prior = priors,
   seed = 1234,
-  iter = 12500, warmup = 5000,
-  chains = 4, cores = 4,
+  iter = 15000, warmup = 5000,
+  chains = 5, cores = 5,
   sample_prior = "only",
   file = "models/m_prior_only.RDS"
 )

@@ -3,6 +3,7 @@
 ## Load libraries ----
 library(ggplot2)
 library(data.table)
+library(ggsci)
 
 # Simulate data -----------------------------------------------------------
 
