@@ -129,6 +129,6 @@ figure <- ggpubr::ggarrange(
 )
 
 ggsave("figures/prior-model.pdf", figure, "pdf", 
-       width = 7, height = 4, units = "in")
+       width = 7, height = 5, units = "in")
 ggsave("figures/prior-model.png", figure, "png", 
-       width = 7, height = 4, units = "in", dpi = 500)
+       width = 7, height = 5, units = "in", dpi = 500)

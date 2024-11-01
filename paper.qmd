@@ -3,9 +3,6 @@ title: ""
 format: 
   docx:
     reference-doc: "ref.docx"
-    fig-format: pdf
-    fig-asp: 0.75
-    fig-width: 7
 bibliography: "misc/ref.bib"
 csl: "misc/frontiers-in-physiology.csl"
 editor_options: 
@@ -44,19 +41,19 @@ Cristian Núñez-Espinosa, School of Medicine, University of Magallanes, Punta A
 
 # Introduction 
 
-Current research has delved deep into understanding the underlying mechanisms behind cardiac autonomic dynamics in response to exercise, and how this could be related to health-related quality of life and an increased risk of cardiovascular diseases. Hence, shedding light on the autonomic mechanics can provide insights into the role play between modifying parameters of exercise-induced response and how to optimize it to achieve optimal effects in both young and older individuals.
+Current research has extensively examined the mechanisms underlying cardiac autonomic dynamics in response to exercise and their links to health-related quality of life and cardiovascular disease risk. Understanding these autonomic processes offers valuable insights into optimizing exercise-induced adaptations, with implications for both younger and older individuals.
 
-The study of R-R intervals (RRi) in response to exercise is a key research area within this context, given its significant implications for cardiovascular health, athletic performance, and overall physiological adaptation [@kristal1995heart; @thayer2010relationship; @dong2016role; @lundstrom2023practices]. Unlike measures of heart rate variability (HRV), which summarize autonomic activity over time, RRi offers a more direct and granular view of the heart's electrical activity during or immediately after an exercise test in older individuals [@mongin2022hrv; @castillo2023validity; @mabe2024associations]. Analyzing the temporal dynamics of RRi (i.e., the time between successive heartbeats) provides invaluable insights into how the cardiovascular system behaves to and recovers from physical stressors, such as fatigue after competition or an intense exercise test [@castillo2021cardiac; @eser2022exercise].
+In this context, the study of R-R intervals (RRi) in response to exercise has emerged as an important research area, given its relevance to cardiovascular health, athletic performance, and physiological adaptation [@kristal1995heart; @thayer2010relationship; @dong2016role; @lundstrom2023practices]. Unlike heart rate variability (HRV), which aggregates autonomic responses over time, RRi analysis provides a more granular, direct view of cardiac electrical activity during or immediately following exercise, particularly in older adults [@mongin2022hrv; @castillo2023validity; @mabe2024associations]. Analyzing the temporal dynamics of RRi (i.e., the time between successive heartbeats) provides invaluable insights into how the cardiovascular system behaves to and recovers from physical stressors such as exercise-induced fatigue and competition-related strain [@castillo2021cardiac; @eser2022exercise].
 
-Understanding these fluctuations is particularly relevant during dynamic periods of exercise when the autonomic nervous system (ANS) shifts between parasympathetic withdrawal and sympathetic activation [@boettger2010heart]. Modeling RRi dynamics, rather than relying on broader HRV metrics, allows researchers to focus on the direct physiological markers of autonomic adaptation to stress [@hautala2003short]. This detailed perspective is critical for identifying recovery patterns and understanding cardiovascular reactivity in athletes and individuals with varied fitness levels [@mongin2022hrv].
+Understanding these fluctuations is particularly relevant during dynamic exercise periods, where the autonomic nervous system (ANS) shifts between parasympathetic withdrawal and sympathetic activation [@boettger2010heart]. Modeling RRi dynamics, rather than relying on broader HRV metrics, allows for a direct assessment of physiological markers of autonomic adaptation to stress [@hautala2003short]. This approach is valuable for identifying recovery patterns and understanding cardiovascular reactivity across individuals with various fitness levels [@mongin2022hrv].
 
-Despite the importance of RRi analysis, modeling their nonlinear behavior during and after exercise in one continuous measurement it is not without significant challenges. Traditional approaches, such as linear regression and time-series analysis, often fail to capture the intricate transitions in RRi, especially during intense physical exertion and recovery. This limitation is due to the non-linear and non-stationary nature of HRV [@gronwald2019effects]. Linear models, which oversimplify these transitions, are prone to misrepresent the actual physiological processes. More advanced non-linear models have begun to address this issue, yet many focus on overall HRV parameters rather than directly modeling the RRi [@gronwald2019non].
+Despite its importance, modeling RRi behavior during and after exercise in a continuous measurement poses significant challenges. Traditional approaches, such as linear regression and time-series analysis, often fail to capture the intricate transitions in RRi, especially under intense exertion and recovery phases. This difficulty arises due to the inherently non-linear and non-stationary nature of HRV [@gronwald2019effects]. While linear models oversimplify these dynamics, advanced non-linear approaches have been developed to address the limitations of linear analysis. However, many focus on HRV summaries rather than direct RRi modeling [@gronwald2019non].
 
-Non-linear models have gained increasing attention for analyzing the complex dynamics of RRi, especially during exercise. These models offer a more comprehensive understanding of HRV compared to traditional linear approaches [@wu2003nonlinear]. Recent studies have proposed exponential decay models to describe RRi recovery, while others have employed logistic functions to depict the gradual return to baseline following periods of heightened physical stress [@molkkari2020online; @gronwald2019non]. These models offer an advantage over traditional HRV analyses by providing a more detailed understanding of the cardiovascular system's response to exercise. However, despite these advancements, few models explicitly target real-time RRi dynamics, and fewer still incorporate the variability introduced by individual physiological differences, such as fitness level, autonomic balance, and exercise intensity [@kanniainen2023estimation].
+Recent studies have begun exploring non-linear models for RRi dynamics, recognizing their potential to capture the complexity of cardiovascular response to exercise. Exponential decay models, for example, have been proposed to describe RRi recovery, while logistic functions have been used to model the gradual return to baseline after high-intensity exercise [@molkkari2020online; @gronwald2019non]. These models offer advantages over traditional HRV metrics by providing a more detailed understanding of the cardiovascular system's response to exercise [@wu2003nonlinear]. However, despite these advancements, few models are specifically designed to capture real-time RRi fluctuations, and even fewer consider individual variability factors such as fitness level, autonomic balance, and exercise intensity [@kanniainen2023estimation].
 
-Given the unique characteristics of RRi, their direct relationship with cardiac electrical activity, and responsiveness to autonomic changes, there is a compelling need for a model that captures their non-linear fluctuations during exercise and recovery. Such a model would offer a more biologically relevant representation of the heart’s behavior than the broader HRV indices typically used in research [@bacopoulou2021entropy].
+Given the unique characteristics of RRi, their direct relationship with cardiac electrical activity, and responsiveness to autonomic changes, there is a compelling need for a model that accurately represents RRi's non-linear fluctuations during exercise and recovery. Such a model would offer a more physiologically relevant representation of the heart's behavior compared to the broader HRV indices commonly used in research [@bacopoulou2021entropy].
 
-Hence, the primary objective of this paper is to present a novel non-linear model that characterizes the fluctuations in RRi during exercise and recovery. This model is specifically designed to reflect the complex, real-time changes in RRi, offering meaningful model parameters with the potential to explore a precise understanding of the physiological processes underlying cardiovascular adaptation to exercise. By focusing exclusively on RRi, the model can deliver insights directly applicable to athletic training regimens, recovery protocols, and clinical practices aimed at improving cardiovascular health. The proposed model seeks to bridge the gap between existing modeling frameworks and the physiological reality of RRi dynamics during exercise.
+Hence, the primary objective of this paper is to present a novel non-linear model that characterizes RRi fluctuations during exercise and recovery. This model is designed to capture the complex, real-time changes in RRi, providing meaningful parameters that can enhance our understanding of the physiological processes underlying cardiovascular adaptation to exercise. By focusing exclusively on RRi, the model can deliver insights directly applicable to athletic training regimens, recovery protocols, and clinical practices aimed at improving cardiovascular health. The proposed model seeks to bridge the gap between existing modeling frameworks and the physiological reality of RRi dynamics during exercise.
 
 # Methods
 
@@ -84,9 +81,9 @@ This logistic structure is well-suited to modeling the RRi dynamics, providing a
 
 ## Sensitivity to model parameters
 
-To assess the sensitivity of model parameters in influencing RRi over time, we implemented a Sobol sensitivity analysis using Monte Carlo simulations. To compute Sobol indices, a total of 500 Monte Carlo simulations were conducted, with each simulation involving 500 randomly sampled parameter sets (250,000 model runs in total). For each set of parameters, RR intervals were calculated at each time point $t$ across a range from 0 to 20 minutes at intervals of 0.1 minutes. The resulting Sobol indices provided a measure of the contribution of each parameter to the variance in RR intervals at each time point.
+To assess the sensitivity of model parameters in influencing RRi over time, we implemented a Sobol sensitivity analysis using Monte Carlo simulations. Sobol analysis was selected for its robustness in handling non-linear and non-monotonic relationships, which are intrinsic to RRi dynamics in response to exercise. To compute Sobol indices, a total of 1000 Monte Carlo simulations were conducted, with each simulation involving 1000 randomly sampled parameter sets (1,000,000 model runs in total). For each set of parameters, RRi were calculated at each time point $t$ across a range from 0 to 20 minutes at intervals of 0.1 minutes (i.e., 6 seconds). The resulting Sobol indices provided a measure of the contribution of each parameter to the variance in RRi at each time point.
 
-The first-order Sobol index for each parameter was computed by isolating the variance attributable to each parameter while averaging over the others. To achieve this, we perturbed each parameter individually while holding all other parameters at their average values across the samples. The proportion of variance explained by each parameter at each time point was calculated by dividing the variance of the perturbed model outputs by the total variance, yielding time-dependent Sobol indices. The selected parameter ranges, provided in [Table 1](#tbl-sens-params), reflect a 50% variation in both directions from a reference value for each parameter.
+The first-order Sobol index for each parameter was computed by isolating the variance attributable to each parameter while averaging over the others. To achieve this, we perturbed each parameter individually while holding all other parameters at their average values across the samples. The proportion of variance explained by each parameter at each time point was calculated by dividing the variance of the estimated RRi of the perturbed parameter by the total variance, which accounts for the variation in all model parameters simultaneously, yielding time-dependent Sobol indices. The selected parameter ranges, provided in [Table 1](#tbl-sens-params), reflect a 50% variation in both directions from a reference value for each parameter.
 
 |  | $\alpha$| $\beta$| $c$| $\lambda$| $\phi$| $\tau$| $\delta$|
 |----|--------:|-------:|----:|-------:|-------:|------:|--------:|
@@ -183,7 +180,7 @@ Individual perturbation of each parameter highlighted that RRi dynamics are sens
 
 ![](figures/sobol-sensitivity.png)
 
-[**Figure 3**]{#fig-sensitivity}. Sensitivity analysis results illustrating the impact of parameter variability on model predictions and the percentage of explained variance accounted for each model parameter. Shaded areas represent 95%, 80%, and 60% CI estimated from Monte Carlo samples.
+[**Figure 3**]{#fig-sensitivity}. Sensitivity analysis results illustrating the impact of parameter variability on model predictions and the percentage of explained variance accounted for each model parameter. Shaded areas represent 95%, 80%, and 60% CI estimated from Monte Carlo samples. Time in x-axis is truncated at 12 minutes, given that around this time, the proportion of the total variance explained by the respective model parameter stabilizes respective of time.
 
 Despite the limited sensitivity of $\lambda$ and $\phi$ to mean RRi, these parameters play a pivotal role in determining the rate of change in RRi in response to physical exertion. Therefore, they can significantly affect RRi dynamics over time. The influence of these rate parameters on RRi fluctuations over time is depicted in [Figure 4](#fig-data-sim).
 
@@ -210,38 +207,35 @@ Initial exploration of RRi dynamics using two-dimensional density kernel estimat
 
 [**Figure 5**]{#fig-2d-kernel-density}. 2D kernel density of RRi dynamics over time from a sample of individuals subjected to a rest-exercise-rest protocol. Darker colors indicate greater probability density. The contrary can be said about lighter colors.
 
-<!---
-Interpretación de los parámetros ajustados: Explica los valores estimados de los parámetros 
-a, b, c, e, f, t0, y t1, y cómo se interpretan en términos fisiológicos.
---->
 
-<!---
-Comparación con otros enfoques: Si es posible, compara el rendimiento del modelo no lineal con otros enfoques más simples, como modelos lineales o mixtos.
---->
 
 # Discussion
 
-<!---
-Interpretación de los resultados: Discute cómo los resultados obtenidos apoyan la hipótesis de que el modelo no lineal es más adecuado para describir las fluctuaciones de la HRV en respuesta al ejercicio.
---->
+In this study, we present a non-linear model designed to capture R-R interval (RRi) fluctuations during exercise and recovery, providing an in-depth view of cardiac autonomic dynamics. By focusing on RRi rather than aggregate HRV metrics, our approach enables real-time tracking of cardiovascular responses to physical stress, which has implications for both clinical and athletic applications. This model marks a step forward in computational physiology, bridging the gap between theoretical frameworks and practical monitoring applications.
 
-<!---
-Implicaciones fisiológicas: Expón qué nos dice el modelo sobre los mecanismos de recuperación cardiovascular y su relevancia para la fisiología deportiva o la medicina.
---->
+<!--- Sensitivity Analysis and Model Robustness --->
+The Sobol sensitivity analysis revealed baseline RRi ($\alpha$) and recovery proportion ($c$) as key drivers of model output variance, consistent with physiological expectations. Baseline RRi reflects intrinsic cardiac properties, while recovery proportion captures autonomic re-engagement post-exercise, both central to cardiovascular adaptation. The relatively low sensitivity of decay and recovery rate parameters ($\lambda$ and $\phi$) suggests the model is robust to moderate fluctuations in these rates, which enhances its reliability for both individualized and group-based applications.
 
-<!---
-Limitaciones: Menciona posibles limitaciones del modelo, como la necesidad de datos de alta calidad o la dificultad de interpretar algunos parámetros en ciertos contextos.
---->
+Sobol analysis was selected for its capacity to handle non-linear, time-varying relationships, but it assumes parameter independence and demands substantial computational resources. This assumption may overlook interdependencies typical in biological systems, where parameters such as decay rates and recovery kinetics often interact. For future work, alternative sensitivity methods, such as Bayesian sensitivity analysis, could address interdependencies and potentially improve interpretive accuracy in complex biological contexts. Additionally, real-time applications in resource-limited environments may benefit from computational optimizations, such as surrogate modeling or sparse-grid approximations, to reduce processing time while maintaining analytical depth.
 
-<!---
-Futuras direcciones: Sugiere mejoras al modelo, posibles aplicaciones o nuevas líneas de investigación en el uso de enfoques no lineales para modelar respuestas fisiológicas.
---->
+<!--- Validation and Practical Applications --->
+The practical application of this model extends to clinical monitoring and athletic training, but further validation is essential to confirm its robustness in real-world conditions. To support clinical decision-making, future studies should validate the model against established physiological benchmarks, such as VO₂ max and lactate thresholds, which would facilitate its integration into routine health assessments. For instance, this model could be valuable in cardiovascular rehabilitation programs, where tracking real-time autonomic responses can help personalize exercise regimens, ensuring adequate recovery without overstressing the cardiovascular system. Furthermore, for at-risk populations, the model could assist in detecting autonomic irregularities indicative of early cardiovascular dysfunction.
+
+For athletic applications, the model has potential in guiding interval training, where it could help identify optimal recovery points between intense exercise bouts. In this setting, real-time tracking of RRi dynamics may help prevent overtraining and optimize performance by aligning training load with individual recovery capacity. However, extending this model beyond controlled, single-bout settings requires further validation, particularly in dynamic environments where external factors like temperature, altitude, and psychological stress can influence RRi. Integrating the model with wearable devices would be essential for field applications, but these devices must capture RRi with sufficient accuracy to maintain model precision. Future studies should focus on adapting the model for wearable technology and testing it in diverse settings to evaluate its reliability across environmental and situational variations.
+
+<!--- Advances Over Existing Models --->
+Traditional models of RRi often rely on linear assumptions or simple exponential functions, which fail to capture the transient, non-stationary nature of RRi during exercise and recovery. By using logistic functions to model both the decay and recovery phases, our non-linear approach accommodates gradual autonomic shifts more effectively than exponential functions, offering a physiologically relevant representation of RRi dynamics. This model also enhances interpretability by isolating time-dependent contributions of each parameter, as demonstrated in the Sobol analysis, thereby enabling applications across varied fitness levels and exercise intensities.
+
+While recent studies have developed non-linear models, many focus on HRV aggregates that summarize rather than directly model RRi changes. By focusing on RRi, our model provides a high-resolution view of cardiac adaptation, which is particularly valuable for both clinical and athletic settings. Furthermore, the ability to adapt the model parameters to real-time changes in RRi has the potential to enhance sensitivity in detecting subtle shifts in autonomic state, which aggregated HRV indices may obscure.
+
+<!--- Limitations and Future Directions --->
+This model has limitations that warrant careful consideration. First, the uniform parameter sampling used in sensitivity analysis, though practical, may not fully capture individual variability in populations with extreme autonomic profiles or chronic health conditions. Moving forward, incorporating empirical distributions or Bayesian priors based on population data could refine parameter estimates, enhancing individualization for diverse clinical populations, such as older adults or individuals with cardiovascular disease.
+
+Another area for future research is multi-session modeling to account for cumulative adaptations over repeated exercise sessions. Real-world training and rehabilitation often involve multiple bouts of exercise that can introduce cumulative autonomic fatigue or adaptation. Extending the model to track such longitudinal effects could help identify early signs of overtraining or autonomic exhaustion, thereby providing a preventive tool for both clinical and athletic populations. Additionally, considering environmental and psychological factors—such as temperature, stress, or sleep quality—would add robustness, ensuring that model predictions remain accurate across varied real-world contexts.
 
 # Conclusion
 
-<!---
-Resumen de los hallazgos: Reitera brevemente los principales hallazgos y cómo el modelo puede ser útil en futuras investigaciones sobre HRV y la recuperación post-ejercicio.
---->
+In summary, this study introduces a non-linear model of RRi dynamics that captures complex, real-time fluctuations reflecting the autonomic nervous system’s response to exercise and recovery. By focusing on RRi, the model offers enhanced sensitivity to physiological changes, making it well-suited for personalized applications in clinical and athletic settings. The use of Sobol sensitivity analysis enabled a time-dependent interpretation of parameter effects, underscoring the model’s adaptability to diverse physiological states and exercise intensities. Nevertheless, further validation, particularly with multi-session and wearable-based applications, is essential to establish the model’s robustness and applicability in dynamic, real-world environments. By advancing precision in cardiovascular monitoring, this model holds promise for supporting individualized health and performance interventions, contributing meaningfully to the fields of computational physiology and applied health sciences.
 
 # Authors' Contributions
 

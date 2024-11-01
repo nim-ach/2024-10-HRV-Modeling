@@ -41,7 +41,7 @@ sobol_sample <- function(n_samples) {
   return(out)
 }
 
-# Perform Sobol analysis
+# Sobol analysis main function
 sobol_variance <- function(model_function, samples, time_points) {
   # Generate total output for each sample to get baseline variance
   total_output <- sapply(1:nrow(samples), function(i) {
@@ -76,8 +76,8 @@ sobol_variance <- function(model_function, samples, time_points) {
 
 # Perform Bootstrapped Sobol analysis -------------------------------------
 
-n_boot <- 500                       ## Number of Monte Carlo simulations
-n_samples <- 500                    ## Number of samples per MC sims
+n_boot <- 1000                       ## Number of Monte Carlo simulations
+n_samples <- 1000                    ## Number of samples per MC sims
 time_points <- seq(0, 20, by = 0.1) ## Time points for RR interval calculations
 
 boot <- vector(mode = "list", length = n_boot) ## Pre allocate list for results
@@ -101,40 +101,58 @@ if (!file.exists("R/sobol-sensitivity.RDS")) { ## Omit computation if already ex
   
   ## Save results to prevent future computation time
   saveRDS(object = sobol_results, file = "R/sobol-sensitivity.RDS")
+} else {
+  sobol_results <- readRDS("R/sobol-sensitivity.RDS")
 }
 
 
-figure <- ggplot(sobol_results[time <= 10], aes(time, mean)) +
-  facet_wrap(~ variable, nrow = 1,
-             labeller = label_parsed,
-             scales = "free_y") +
-  geom_line(aes(col = variable), show.legend = FALSE) +
-  geom_ribbon(aes(fill = variable, 
-                  ymin = mean - se * qnorm(.975),
-                  ymax = mean + se * qnorm(.975)), 
-              show.legend = FALSE, alpha = .3) +
-  geom_ribbon(aes(fill = variable, 
-                  ymin = mean - se * qnorm(.9),
-                  ymax = mean + se * qnorm(.9)), 
-              show.legend = FALSE, alpha = .3) +
-  geom_ribbon(aes(fill = variable, 
-                  ymin = mean - se * qnorm(.8),
-                  ymax = mean + se * qnorm(.8)), 
-              show.legend = FALSE, alpha = .3) +
-  scale_y_continuous(labels = scales::label_percent(accuracy = 1),
-                     name = "Sensitivity",
-                     expand = c(0,0,0,0.05),
-                     n.breaks = 5) +
-  scale_x_continuous(name = "Time (minutes)",
-                     expand = c(0,0),
-                     n.breaks = 3) +
-  ggsci::scale_color_bmj() +
-  ggsci::scale_fill_bmj() +
-  theme_classic(base_size = 12) +
-  theme(axis.text = element_text(size = rel(.8)),
-        strip.background = element_rect(colour = NA, fill = "gray90"))
+# Plot results ------------------------------------------------------------
 
+## Function to plot function
+plot_sobol_sens <- function(vars, yexp, ylim, ind_cols) {
+  cols <- ggsci::pal_bmj()(7)
+  ggplot(sobol_results[time <= 12 & variable %in% vars], aes(time, mean)) +
+    facet_grid(cols = vars(variable),
+               labeller = label_parsed,
+               scales = "free_y") +
+    geom_line(aes(col = variable), show.legend = FALSE) +
+    geom_ribbon(aes(fill = variable, 
+                    ymin = mean - se * qnorm(.975),
+                    ymax = mean + se * qnorm(.975)), 
+                show.legend = FALSE, alpha = .3) +
+    geom_ribbon(aes(fill = variable, 
+                    ymin = mean - se * qnorm(.9),
+                    ymax = mean + se * qnorm(.9)), 
+                show.legend = FALSE, alpha = .3) +
+    geom_ribbon(aes(fill = variable, 
+                    ymin = mean - se * qnorm(.8),
+                    ymax = mean + se * qnorm(.8)), 
+                show.legend = FALSE, alpha = .3) +
+    scale_y_continuous(labels = scales::label_percent(accuracy = 1),
+                       name = "Sensitivity",
+                       expand = yexp,
+                       limits = ylim,
+                       n.breaks = 5) +
+    scale_x_continuous(name = "Time (minutes)",
+                       expand = c(0,0),
+                       n.breaks = 3) +
+    scale_color_manual(values = cols[ind_cols], aesthetics = c("fill", "colour")) +
+    theme_classic(base_size = 12) +
+    theme(axis.text = element_text(size = rel(.8)),
+          strip.background = element_rect(colour = NA, fill = "gray90"))
+}
+
+## Generate figures and arrange them in a grid
+figure <- ggpubr::ggarrange(
+  plot_sobol_sens(vars = c("alpha"), c(0,0,0,0.01), c(0, NA), 1),
+  plot_sobol_sens(vars = c("beta", "c"), c(0,0,0,0), c(0, 0.25), 2:3),
+  plot_sobol_sens(vars = c("lambda", "phi"), c(0,0,0,0), c(0, 0.035), 4:5),
+  plot_sobol_sens(vars = c("tau", "delta"), c(0,0,0,0.0), c(0, 0.35), 6:7),
+  ncol = 2, nrow = 2
+)
+
+## Save the final figure in pdf and png formats
 ggsave("figures/sobol-sensitivity.pdf", figure, "pdf", 
-       width = 7, height = 3, units = "in")
+       width = 7, height = 5, units = "in")
 ggsave("figures/sobol-sensitivity.png", figure, "png", 
-       width = 7, height = 3, units = "in", dpi = 500)
+       width = 7, height = 5, units = "in", dpi = 500)

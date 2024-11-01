@@ -33,6 +33,6 @@ figure <- ggplot(sim_data, aes(t, RRi)) +
   labs(x = "Time (minutes)", y = "R-R intervals (ms)")
 
 ggsave("figures/model-constituents.pdf", figure, "pdf", 
-       width = 7, height = 4, units = "in")
+       width = 7, height = 5, units = "in")
 ggsave("figures/model-constituents.png", figure, "png", 
-       width = 7, height = 4, units = "in", dpi = 500)
+       width = 7, height = 5, units = "in", dpi = 500)
