@@ -99,7 +99,7 @@ To further assess the performance and applicability of the proposed model, real-
 
 The dataset consisted of 272 participants who underwent a validated exercise protocol encompassing rest, exercise, and recovery phases within a single, continuous measurement session [@castillo2023validity]. Continuous heart rate data, including RRi, were collected using the Polar Team2 system (Polar®) application, which is capable of capturing dynamic fluctuations associated with varying exercise intensities and recovery.
 
-Preprocessing steps were conducted to remove artifacts and ectopic heartbeats, with less than 3% of data excluded following established guidelines [@malik1996heart]. The preprocessed RRi data were then aggregated into time intervals to facilitate analysis, allowing the examination of acute exercise responses as well as post-exercise recovery patterns.
+Preprocessing steps were conducted to remove artifacts and ectopic heartbeats, with less than 3% of data excluded following established guidelines [@malik1996heart]. The preprocessed RRi data were then aggregated into time intervals to facilitate analysis, allowing the examination of acute exercise responses as well as post-exercise recovery patterns. 
 
 This real-world dataset provided a critical context for validating the model’s predictive capability against observed physiological responses, offering a robust foundation for understanding RRi dynamics under conditions of physical activity.
 
@@ -107,21 +107,23 @@ This real-world dataset provided a critical context for validating the model’s
 
 Parameter estimation was performed using Hamiltonian Monte Carlo (HMC) with the No-U-Turn Sampler (NUTS) to explore the parameter space. This method is suitable for high-dimensional spaces and utilizes gradient information for efficient sampling. The parameters $\alpha$, $\beta$, $c$, $\lambda$, $\phi$, $\tau$, and $\delta$ were estimated by sampling from the posterior distribution, which was constructed from observed RRi data and model predictions. The Bayesian framework allows the incorporation of prior distributions for parameters, enhancing the reliability of the estimates. 
 
-The priors were selected based on physiological constraints and are detailed in @eq-priors, ensuring in this way, identifiability of model parameters by constraining the parameter space to physiologically plausible values and ultimately, improving model convergence.
+To enhance the exploration of parameter space, each subject´s RRi data was standardize against his own mean and standard deviation, improving convergence and an efficient exploration of the posterior distribution in this high dimensional parameter space.
+
+The priors were chosen based on physiological constraints and graphical visualization of standardized RRi data. These priors are detailed in @eq-priors, ensuring in this way, identifiability of model parameters by constraining the parameter space to physiologically plausible values and ultimately, improving model convergence.
 
 $$
 \begin{aligned} 
-\alpha &\sim \mathcal{N}(850, 50) \text{ with } \alpha \geq 0 \\
-\beta &\sim \mathcal{N}(-400, 50) \text{ with } \beta \leq 0 \\
-c &\sim \mathcal{N}(1, 0.2) \text{ with } c \geq 0 \\
-\lambda &\sim \mathcal{N}(-3, 3) \text{ with } \lambda \leq 0 \\
-\phi &\sim \mathcal{N}(-3, 3) \text{ with } \phi \leq 0 \\
+\alpha &\sim \mathcal{N}(1, 0.5) \\
+\beta &\sim \mathcal{N}(-2.5, 0.5) \text{ with } \beta \leq 0 \\
+c &\sim \mathcal{N}(0.8, 0.2) \text{ with } c \geq 0 \\
+\lambda &\sim \mathcal{N}(-2, 0.5) \text{ with } \lambda \leq 0 \\
+\phi &\sim \mathcal{N}(-2, 0.5) \text{ with } \phi \leq 0 \\
 \tau &\sim \mathcal{N}(5, 0.5) \text{ with } \tau \geq 0 \\
 \delta &\sim \mathcal{N}(5, 0.5) \text{ with } \delta \geq 0
 \end{aligned}
 $$ {#eq-priors}
 
-Simulated RRi dynamics based on the prior parameter distributions are shown in [Figure 1](#fig-prior-sim).
+Simulated standardized RRi dynamics based on prior parameter distributions are shown in [Figure 1](#fig-prior-sim).
 
 ![](figures/prior-model.png)
 
@@ -129,7 +131,7 @@ Simulated RRi dynamics based on the prior parameter distributions are shown in [
 
 The gradient of the log-likelihood function for each parameter was computed during estimation using the brms R package, which employs the Stan probabilistic programming language. Convergence of the HMC chains was evaluated using the Gelman-Rubin diagnostic and trace plots to ensure reliable parameter estimates. This quantification of uncertainty is essential for assessing the stability of parameter estimates, particularly in the presence of noisy RRi data.
 
-The fitting process utilized five Markov Chain Monte Carlo (MCMC) chains, each consisting of 15,000 iterations with a burn-in period of 5,000 iterations, resulting in a total of 50,000 post-warmup samples.
+The fitting process utilized five Markov Chain Monte Carlo (MCMC) chains, each consisting of 10,000 iterations with a burn-in period of 5,000 iterations, resulting in a total of 25,000 post-warmup samples. The model was fitted for each subject´s standardized RRi data, allowing the estimation of the model parameters associated with individual RRi dynamics for each subject. Afterwards, we transformed back to the RRi scale the $\alpha$ and $\beta$ parameters, ensuring a physiologically meaningful interpretation of model estimation.
 
 ## Model Evaluation
 

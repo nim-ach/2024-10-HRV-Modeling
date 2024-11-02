@@ -89,5 +89,10 @@ if (FALSE) {
 
 rri_data[, file := NULL][]
 
+## Standardize as with the simulated dataset
+rri_data[, rri_mean := mean(rr_denoised, na.rm = TRUE), by = id][]
+rri_data[, rri_sd := sd(rr_denoised, na.rm = TRUE), by = id][]
+rri_data[, rri_std := (rr_denoised - rri_mean) / rri_sd, by = id][]
+
 save(rri_data, file = "data/rri_data.RData")
 fwrite(rri_data, file = "data/rri_data.csv")

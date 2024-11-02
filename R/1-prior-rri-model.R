@@ -40,26 +40,28 @@ sample_params <- function(n_id, n_rep, min, max) {
 
 ## Main model
 main_model <- bf(
-  rri ~ alpha + 
+  rri_std ~ alpha + 
     (beta / (1 + exp(lambda * (time - tau)))) + 
     ((-beta * c) / (1 + exp(phi * (time - tau - delta)))), 
   
-  alpha + beta + c ~ 1 | id, 
-  lambda + phi ~ 1 | id, 
-  tau + delta ~ 1 | id, 
+  alpha + beta + c ~ 1, 
+  lambda + phi ~ 1, 
+  tau + delta ~ 1, 
   nl = TRUE
 )
 
 # Define priors for the parameters
 priors <- c(
-  prior(normal(850, 50), nlpar = alpha, lb = 0),
-  prior(normal(-400, 50), nlpar = beta, ub = 0),
-  prior(normal(1, 0.2), nlpar = c, lb = 0),
-  prior(normal(-3, 3), nlpar = lambda, ub = 0),
-  prior(normal(-3, 3), nlpar = phi, ub = 0),
+  ## Fix effects
+  prior(normal(1, 0.5), nlpar = alpha), 
+  prior(normal(-2.5, 0.5), nlpar = beta, ub = 0),
+  prior(normal(0.8, 0.2), nlpar = c, lb = 0),
+  prior(normal(-2, 0.5), nlpar = lambda, ub = 0),
+  prior(normal(-2, 0.5), nlpar = phi, ub = 0),
   prior(normal(5, 0.5), nlpar = tau, lb = 0),
   prior(normal(5, 0.5), nlpar = delta, lb = 0),
-  prior(student_t(3, 0, 50), class = sigma, lb = 0)
+  ## Sigma
+  prior(student_t(3, 0, 1), class = sigma, lb = 0)
 )
 
 len_t <- 100
@@ -67,19 +69,9 @@ len_n <- 5
 
 new_data <- data.table(
   time = seq(0, 20, length.out = len_t),
-  alpha = sample_params(len_n, len_t, 500, 1500),
-  beta = sample_params(len_n, len_t, -800, -200),
-  c = sample_params(len_n, len_t, .5, 1.5),
-  lambda = sample_params(len_n, len_t, log(1-.9), log(1-.5)),
-  phi = sample_params(len_n, len_t, log(1-.8), log(1-.4)),
-  tau = sample_params(len_n, len_t, 4, 6),
-  delta = sample_params(len_n, len_t, 4, 6),
-  id = rep(1:len_n, each = len_t)
+  id = rep(1:len_n, each = len_t),
+  rri_std = rnorm(len_t)
 )
-
-new_data$rri <- with(
-  data = new_data, 
-  RRi_model(time, alpha, beta, c, lambda, phi, tau, delta))
 
 m_prior_only <- brm(
   formula = main_model,
@@ -87,7 +79,7 @@ m_prior_only <- brm(
   family = gaussian(),
   prior = priors,
   seed = 1234,
-  iter = 15000, warmup = 5000,
+  iter = 10000, warmup = 5000,
   chains = 5, cores = 5,
   sample_prior = "only",
   file = "models/m_prior_only.RDS"
@@ -98,8 +90,7 @@ time_points <- seq(0, 20, length.out = len_t)
 pred <- predict(
   object = m_prior_only, 
   newdata = data.frame(time = time_points), 
-  probs = c(.025, .1, .2, .8, .9, .975),
-  re_formula = NA
+  probs = c(.025, .1, .2, .8, .9, .975)
 )
 
 fig_a <- ggplot(pred, aes(time_points, Estimate)) +

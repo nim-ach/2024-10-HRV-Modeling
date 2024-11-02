@@ -11,16 +11,8 @@ data("rri_data")
 
 # Generate figure ---------------------------------------------------------
 
-rri_data[, time_cat := cut(time, breaks = seq(0, 20, by = 1), 
-               labels = seq(0, 20, by = 1)[-1]) |> 
-           as.character() |> as.numeric()]
-
-estimate <- rri_data[, list(mean = mean(rr_denoised, na.rm = T),
-                            se = sd(rr_denoised, na.rm = T)), 
-                     list(time = as.numeric(as.character(time_cat)))]
-
-figure <- ggplot(rri_data, aes(time, rr_denoised)) +
-  stat_density_2d_filled(show.legend = FALSE, adjust = 1/3, na.rm = TRUE) +
+figure <- ggplot(rri_data, aes(time, rri_std)) +
+  stat_density_2d_filled(show.legend = FALSE, adjust = 0.75, na.rm = TRUE) +
   scale_x_continuous(expand = c(0,0), name = "Time (minutes)") +
   scale_y_continuous(expand = c(0,0), name = "RRi (ms)") +
   scale_fill_brewer() +
