@@ -33,6 +33,12 @@ simulate_data <- function(n_id, n_time, noise = 10, seed = 1234) {
   )
 }
 
+sample_data <- function(data, n, id_var, na.rm = FALSE) {
+  na_fun <- function(x) return(x)
+  if (isTRUE(na.rm)) na_fun <- na.omit
+  na_fun(data)[, .SD[sort(sample.int(.N, n))], by = id_var]
+}
+
 ## Load the data
 data("rri_data")
 
@@ -41,21 +47,28 @@ rri_data[, rri_mean := mean(rr_denoised, na.rm = TRUE), by = id]
 rri_data[, rri_sd := sd(rr_denoised, na.rm = TRUE), by = id]
 rri_data[, rri_std := (rr_denoised - rri_mean) / rri_sd, by = id]
 
+m_data <- sample_data(rri_data, 200, "id", na.rm = TRUE)
+
 ## Check the 2d-density kernel of time-rri_std
-ggplot(rri_data, aes(time, rri_std)) +
-  stat_density_2d_filled() + 
+ggplot(m_data, aes(time, rri_std)) +
+  stat_density_2d_filled(show.legend = FALSE) + 
   scale_y_continuous(expand = c(0,0)) +
   scale_x_continuous(expand = c(0,0))
 ## Much more aligned across subjects. This will definitely improve model
 ## convergence
 
+ggplot(m_data[id %in% 1:5], aes(time, rri_std, col = ordered(id))) +
+  geom_line(show.legend = FALSE) +
+  scale_y_continuous(expand = c(0,0)) +
+  scale_x_continuous(expand = c(0,0)) +
+  theme_bw(base_line_size = 0)
 
 # Model with fixed effects only -------------------------------------------
 
 m_simple_prior <- c(
   ## Fix effects
   prior(normal(1, 0.5), nlpar = alpha), 
-  prior(normal(-2, 0.5), nlpar = beta, ub = 0),
+  prior(normal(-2.5, 0.5), nlpar = beta, ub = 0),
   prior(normal(0.8, 0.2), nlpar = c, lb = 0),
   prior(normal(-2, 0.2), nlpar = lambda, ub = 0),
   prior(normal(-2, 0.2), nlpar = phi, ub = 0),
@@ -76,7 +89,7 @@ m_simple_formula <- bf(
 
 m_simple <- brm(
   formula = m_simple_formula,
-  data = rri_data[id %in% 1:5 & !is.na(rri_std), .SD[sort(sample.int(.N, 100))], id],
+  data = m_data[id %in% 1:5],
   family = gaussian(),
   prior = m_simple_prior,
   cores = 4, chains = 4,
@@ -87,6 +100,7 @@ m_simple <- brm(
 ## Elapsed Time (Windows): 701.218 seconds (Total)
 ## Elapsed Time (Windows): 665.612 seconds (Total) # small improvement with tight priors
 ## Elapsed Time (Windows): 6.716 seconds (Total) # big improvement with 100 points per id
+## Elapsed Time (MacOS): 17.137 seconds (Total) # 200 points per id
 
 conditional_effects(m_simple)
 bayesplot::mcmc_pairs(m_simple, regex_pars = "^b_", off_diag_fun = "hex")
@@ -129,7 +143,7 @@ m_formula <- bf(
 
 m_full <- brm(
   formula = m_formula,
-  data = rri_data[id %in% 1:5 & !is.na(rri_std), .SD[sort(sample.int(.N, 100))], id],
+  data = m_data[id %in% 1:5],
   family = gaussian(),
   prior = m_prior,
   cores = 4, chains = 4,
@@ -140,6 +154,7 @@ m_full <- brm(
 ## Elapsed Time (Windows): 243.31 seconds (Total)
 ## Elapsed Time (Windows): 354.618 seconds (Total) ## Not much improvement
 ## Elapsed Time (Windows): 364.949 seconds (Total) ## Not much improvement either
+## Elapsed Time (MacOS): 255.41 seconds (Total) ## Its faster and better in MacOS... Mmm...
 
 conditional_effects(m_full)
 bayesplot::mcmc_pairs(m_full, regex_pars = "^b_", off_diag_fun = "hex")

@@ -6,7 +6,13 @@ library(brms)
 library(data.table)
 library(ggpubr)
 
-## Load datasets ----
+sample_data <- function(data, n, id_var, na.rm = FALSE) {
+  na_fun <- function(x) return(x)
+  if (isTRUE(na.rm)) na_fun <- na.omit
+  na_fun(data)[, .SD[sort(sample.int(.N, n))], by = id_var]
+}
+
+## Load the data
 data("rri_data")
 
 ## Standardize as with the simulated dataset
@@ -14,17 +20,7 @@ rri_data[, rri_mean := mean(rr_denoised, na.rm = TRUE), by = id]
 rri_data[, rri_sd := sd(rr_denoised, na.rm = TRUE), by = id]
 rri_data[, rri_std := (rr_denoised - rri_mean) / rri_sd, by = id]
 
-model_data <- rri_data[!is.na(rri_std), .SD[sort(sample.int(.N, 200))], id]
-
-## Custom functions ----
-
-## Main equation
-RRi_model <- function(t, alpha, beta, c, lambda, phi, tau, delta) {
-  alpha +
-    (beta / (1 + exp(lambda * (t - tau)))) +
-    ((-beta * c) / (1 + exp(phi * (t - tau - delta))))
-}
-
+m_data <- sample_data(rri_data, 200, "id", na.rm = TRUE)
 
 # Build models ------------------------------------------------------------
 
@@ -57,7 +53,7 @@ m1_prior <- c(
 
 m1_model <- brm(
   formula = m1_formula,
-  data = model_data,
+  data = m_data,
   family = gaussian(),
   prior = m1_prior,
   seed = 1234,
@@ -104,7 +100,7 @@ m2_prior <- c(
 
 m2_model <- brm(
   formula = m2_formula,
-  data = model_data,
+  data = m_data,
   family = gaussian(),
   prior = m2_prior,
   seed = 1234,
