@@ -107,9 +107,38 @@ This real-world dataset provided a critical context for validating the model’s
 
 Parameter estimation was performed using Hamiltonian Monte Carlo (HMC) with the No-U-Turn Sampler (NUTS) to explore the parameter space. This method is suitable for high-dimensional spaces and utilizes gradient information for efficient sampling. The parameters $\alpha$, $\beta$, $c$, $\lambda$, $\phi$, $\tau$, and $\delta$ were estimated by sampling from the posterior distribution, which was constructed from observed RRi data and model predictions. The Bayesian framework allows the incorporation of prior distributions for parameters, enhancing the reliability of the estimates. 
 
-To enhance the exploration of parameter space, each subject´s RRi data was standardize against his own mean and standard deviation, improving convergence and an efficient exploration of the posterior distribution in this high dimensional parameter space.
+The gradient of the log-likelihood function for each parameter was computed during estimation using the brms R package, which employs the Stan probabilistic programming language. Convergence of the HMC chains was evaluated using the Gelman-Rubin diagnostic and trace plots to ensure reliable parameter estimates. This quantification of uncertainty is essential for assessing the stability of parameter estimates, particularly in the presence of noisy RRi data.
 
-The priors were chosen based on physiological constraints and graphical visualization of standardized RRi data. These priors are detailed in @eq-priors, ensuring in this way, identifiability of model parameters by constraining the parameter space to physiologically plausible values and ultimately, improving model convergence.
+The fitting process utilized five Markov Chain Monte Carlo (MCMC) chains, each consisting of 10,000 iterations with a burn-in period of 5,000 iterations, resulting in a total of 25,000 post-warmup samples. 
+
+To enhance the exploration of parameter space we performed a two-stage analysis: individual-level and group-level estimates. 
+
+### Individual-level analysis
+
+Firstly, each subject's RRi data $\text{RRi}_{i,t}$ was standardize against his own mean $\bar{\text{RRi}_i}$ and standard deviation $\sigma_{\text{RRi}_i}$ to improve convergence and exploration of the posterior distribution. The standardized RRi data $y_{i,t}$ for each time point $t$ was computed as:
+
+$$
+y_{i,t} = \frac{\text{RRi}_{i,t} - \bar{\text{RRi}_i}}{\sigma_{\text{RRi}_i}}
+$$
+This standardization allowed the model to focus on relative changes in RRi dynamics, independent of individual baseline differences.
+
+The model for each subject $i$ was then specified in terms of standardized RRi data $y_{i,t}$:
+
+$$
+y_{i,t} = \alpha_i + \frac{\beta_i}{1 + e^{\lambda_i \cdot (t - \tau_i)}} + \frac{-\beta_i \cdot c}{1 + e^{\phi_i \cdot (t - \tau_i - \delta_i)}} + \epsilon_{i,t}
+$$
+where $\alpha_i$, $\beta_i$, $c_i$, $\lambda_i$, $\phi_i$, $\tau_i$, $\delta_i$ are the individual-specific model parameters and $\epsilon_{i,t} \sim \mathcal{N}(0, \sigma^2)$ is the residual error term at each time point $t$.
+
+Afterwards, we transformed the estimated $\alpha$ and $\beta$ parameters back to the original RRi scale, ensuring a physiologically meaningful interpretation. The transformation for each subject $i$ is given by:
+
+$$
+\begin{aligned}
+\alpha_i^{\text{RRi}} &= \alpha_i \cdot \sigma_{\text{RRi}_i} + \bar{\text{RRi}}_i \\
+\beta_i^{\text{RRi}} &= \beta_i \cdot \sigma_{\text{RRi}_i}
+\end{aligned}
+$$
+
+Priors were chosen based on physiological constraints and graphical visualization of standardized RRi data, ensuring identifiability of model parameters by constraining the parameter space to plausible values, which improves model convergence. The prior distributions are defined as follows:
 
 $$
 \begin{aligned} 
@@ -121,17 +150,35 @@ c &\sim \mathcal{N}(0.8, 0.2) \text{ with } c \geq 0 \\
 \tau &\sim \mathcal{N}(5, 0.5) \text{ with } \tau \geq 0 \\
 \delta &\sim \mathcal{N}(5, 0.5) \text{ with } \delta \geq 0
 \end{aligned}
-$$ {#eq-priors}
+$$
 
 Simulated standardized RRi dynamics based on prior parameter distributions are shown in [Figure 1](#fig-prior-sim).
 
 ![](figures/prior-model.png)
 
-[**Figure 1**]{#fig-prior-sim}. Predicted RRi response to exercise, illustrating uncertainty in model parameters from the prior distribution. Shaded areas represent 95%, 80%, and 60% quantile CI.
+[**Figure 1**]{#fig-prior-sim}. Prior predicted RRi response to exercise, illustrating uncertainty in model parameters from the prior distribution. Shaded areas represent 95%, 80%, and 60% quantile CI.
 
-The gradient of the log-likelihood function for each parameter was computed during estimation using the brms R package, which employs the Stan probabilistic programming language. Convergence of the HMC chains was evaluated using the Gelman-Rubin diagnostic and trace plots to ensure reliable parameter estimates. This quantification of uncertainty is essential for assessing the stability of parameter estimates, particularly in the presence of noisy RRi data.
+### Group-level analysis
 
-The fitting process utilized five Markov Chain Monte Carlo (MCMC) chains, each consisting of 10,000 iterations with a burn-in period of 5,000 iterations, resulting in a total of 25,000 post-warmup samples. The model was fitted for each subject´s standardized RRi data, allowing the estimation of the model parameters associated with individual RRi dynamics for each subject. Afterwards, we transformed back to the RRi scale the $\alpha$ and $\beta$ parameters, ensuring a physiologically meaningful interpretation of model estimation.
+After obtaining the posterior distribution for each subject's parameters, the mean and standard deviation for each parameter were calculated. These estimates were then used as input data to create a multivariate hierarchical model, capturing variability at both the subject and group levels. The model is described as follows:
+
+For each subject $i$, the parameter vector $\theta_i = (\alpha_i, \beta_i, c_i, \lambda_i, \phi_i, \tau_i, \delta_i)^\top$ is modeled as:
+
+$$
+\theta_{i,j} \sim \mathcal{N}(\mu_{j} + b_{i,j}, \sigma_j^2)
+$$
+
+where $\mu_{j}$ is the group-level mean for parameter $j$, $b_{i,j}$ represents the subject-level random effect for subject $i$ on parameter $j$, and $\sigma_j^2$ is the residual variance for parameter $j$.
+
+The subject-level effects $b_{i,j}$ are assumed to follow a multivariate normal distribution:
+
+$$
+\mathbf{b}_i = (b_{i, \alpha}, b_{i, \beta}, b_{i, c}, b_{i, \lambda}, b_{i, \phi}, b_{i, \tau}, b_{i, \delta})^\top \sim \mathcal{N}(\mathbf{0}, \Sigma_b)
+$$
+
+where $\Sigma_b$ is the covariance matrix that captures correlations between the random effects for different parameters across subjects.
+
+This hierarchical structure enables us to capture individual variability through subject-level random effects while also estimating group-level effects across all parameters, thus providing estimates into both subject-level and population-level model parameters.
 
 ## Model Evaluation
 
@@ -207,13 +254,11 @@ Initial exploration of RRi dynamics using two-dimensional density kernel estimat
 
 ![](figures/2d-density-kernel.png)
 
-[**Figure 5**]{#fig-2d-kernel-density}. 2D kernel density of RRi dynamics over time from a sample of individuals subjected to a rest-exercise-rest protocol. Darker colors indicate greater probability density. The contrary can be said about lighter colors.
-
-
+[**Figure 5**]{#fig-2d-kernel-density}. Upper panel shows the mean and standard deviation (SD) from each of the subject's RRi recordings, used for the standardization process. Lower panel indicate the 2D kernel density of standardized RRi dynamics over time from a sample of individuals subjected to a rest-exercise-rest protocol. Darker colors indicate greater probability density. The contrary can be said about lighter colors.
 
 # Discussion
 
-In this study, we present a non-linear model designed to capture R-R interval (RRi) fluctuations during exercise and recovery, providing an in-depth view of cardiac autonomic dynamics. By focusing on RRi rather than aggregate HRV metrics, our approach enables real-time tracking of cardiovascular responses to physical stress, which has implications for both clinical and athletic applications. This model marks a step forward in computational physiology, bridging the gap between theoretical frameworks and practical monitoring applications.
+In this study, we present a non-linear model designed to RRi fluctuations during exercise and recovery, providing an in-depth view of cardiac autonomic dynamics. By focusing on RRi rather than aggregate HRV metrics, our approach enables real-time tracking of cardiovascular responses to physical stress, which has implications for both clinical and athletic applications. This model marks a step forward in computational physiology, bridging the gap between theoretical frameworks and practical monitoring applications.
 
 <!--- Sensitivity Analysis and Model Robustness --->
 The Sobol sensitivity analysis revealed baseline RRi ($\alpha$) and recovery proportion ($c$) as key drivers of model output variance, consistent with physiological expectations. Baseline RRi reflects intrinsic cardiac properties, while recovery proportion captures autonomic re-engagement post-exercise, both central to cardiovascular adaptation. The relatively low sensitivity of decay and recovery rate parameters ($\lambda$ and $\phi$) suggests the model is robust to moderate fluctuations in these rates, which enhances its reliability for both individualized and group-based applications.
