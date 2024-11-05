@@ -27,6 +27,8 @@ for (i in unique_ids) {
     seed = 1234,
     iter = 10000, warmup = 5000,
     chains = 5, cores = 5,
+    control = list(adapt_delta = 0.99,
+                   max_treedepth = 50),
     sample_prior = "no",
     file = paste0("models/id_level/m_id_",i,".RDS")
   )
