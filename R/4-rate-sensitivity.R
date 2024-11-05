@@ -91,7 +91,7 @@ sim_data[, phi := factor(phi,
 
 figure <- ggplot(sim_data, aes(time, hrv)) +
   facet_wrap(~ phi, labeller = labeller(phi = label_parsed)) +
-  geom_line(aes(col = as.factor(x = lambda), group = id), linewidth = 1) +
+  geom_line(aes(col = as.factor(x = lambda), group = id), linewidth = 0.7) +
   geom_vline(xintercept = c(5,7), color = "gray50", linewidth = .25) +
   scale_y_continuous(breaks = c(500, 600, 700, 800)) +
   scale_alpha_manual(values = c(1, .85, .7, .55)) +
