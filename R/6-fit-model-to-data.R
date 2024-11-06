@@ -9,7 +9,7 @@ library(data.table)
 data("rri_data")
 m_data <- rri_data[!is.na(rri_std)]
 
-if (!file.exists("models/stage_1_model.RData")) {
+if (!file.exists("models/stage_1_model.RDS")) {
 
   # Load model --------------------------------------------------------------
   m_model <- readRDS(file = "models/m_prior_only.RDS")
@@ -48,11 +48,11 @@ if (!file.exists("models/stage_1_model.RData")) {
     rbindlist(idcol = "id")
   
   ## Save the resulting id-wise posterior in a file
-  saveRDS(df_models, file = "models/stage_1_model.RData", compress = "xz")
+  saveRDS(df_models, file = "models/stage_1_model.RDS", compress = "xz")
   
 } else {
   ## Load the id-wise posterior file
-  df_models <- readRDS(file = "models/stage_1_model.RData")
+  df_models <- readRDS(file = "models/stage_1_model.RDS")
 }
 
 ## Transform alpha and beta parameters

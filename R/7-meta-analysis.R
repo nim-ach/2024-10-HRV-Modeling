@@ -60,19 +60,19 @@ m_fit <- brm(formula = m_model,
                    max_treedepth = 50)
     )
 
-loo(m_fit)
+saveRDS(m_fit, file = "stage_2_model.RDS")
 
-
-as_draws_df(m_fit_alpha) |> 
-  # tidybayes::spread_draws(
-  #   r_id[subject,], Intercept
-  # ) |> 
-  # transform(id_intercept = Intercept + r_id) |> 
-  ggplot(aes(x = b_Intercept)) +
-  ggdist::stat_halfeye(
-    fill = "lightblue",
-    density = "unbounded", trim = FALSE) +
-  scale_y_continuous(expand = c(0.02,0), breaks = NULL, name = NULL) +
-  scale_x_continuous(expand = c(0.2,0), n.breaks = 6) +
-  theme_classic() +
-  labs(x = expression(symbol(E)~"["*alpha*"]"))
+# 
+# as_draws_df(m_fit_alpha) |> 
+#   # tidybayes::spread_draws(
+#   #   r_id[subject,], Intercept
+#   # ) |> 
+#   # transform(id_intercept = Intercept + r_id) |> 
+#   ggplot(aes(x = b_Intercept)) +
+#   ggdist::stat_halfeye(
+#     fill = "lightblue",
+#     density = "unbounded", trim = FALSE) +
+#   scale_y_continuous(expand = c(0.02,0), breaks = NULL, name = NULL) +
+#   scale_x_continuous(expand = c(0.2,0), n.breaks = 6) +
+#   theme_classic() +
+#   labs(x = expression(symbol(E)~"["*alpha*"]"))
