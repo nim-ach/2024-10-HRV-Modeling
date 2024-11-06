@@ -1,70 +1,66 @@
-N <- 272
-draws = 1
 
+# Prepare workspace -------------------------------------------------------
+
+## Load libraries
 library(data.table)
-
-posteriors <- data.table(
-  id = rep(1:N, each = draws),
-  alpha = rnorm(N * draws, 840, 50),
-  alphaSigma = rnorm(N * draws, 50, 5) |> abs(),
-  beta = rnorm(N * draws, -400, 50),
-  betaSigma = rnorm(N * draws, 50, 5) |> abs(),
-  c = rnorm(N * draws, 0.8, 0.05),
-  cSigma = rnorm(N * draws, 0.05, 0.05) |> abs(),
-  lambda = rnorm(N * draws, -2, 0.1),
-  lambdaSigma = rnorm(N * draws, 0.1, 0.1) |> abs(),
-  phi = rnorm(N * draws, -1.5, 0.1),
-  phiSigma = rnorm(N * draws, 0.05, 0.1) |> abs(),
-  tau = rnorm(N * draws, 5, 0.1),
-  tauSigma = rnorm(N * draws, 0.1, 0.1) |> abs(),
-  delta = rnorm(N * draws, 5, 0.1),
-  deltaSigma = rnorm(N * draws, 0.1, 0.1) |> abs()
-)
-
 library(brms)
+library(ggplot2)
 
-m_mod_alpha <- bf(alpha | se(alphaSigma, sigma = TRUE) ~ 1 + (1 | id))
-m_mod_beta <- bf(beta | se(betaSigma, sigma = TRUE) ~ 1 + (1 | id))
-m_mod_c <- bf(c | se(cSigma, sigma = TRUE) ~ 1 + (1 | id))
-m_mod_lambda <- bf(lambda | se(lambdaSigma, sigma = TRUE) ~ 1 + (1 | id))
-m_mod_phi <- bf(phi | se(phiSigma, sigma = TRUE) ~ 1 + (1 | id))
-m_mod_tau <- bf(tau | se(tauSigma, sigma = TRUE) ~ 1 + (1 | id))
-m_mod_delta <- bf(delta | se(deltaSigma, sigma = TRUE) ~ 1 + (1 | id))
+## Load data
+data("rri_data")
+m_data <- rri_data[!is.na(rri_std)]
+
+## Load adjusted model parameters
+id_data <- fread(file = "models/id_level_posterior.csv")
+
+
+# Fit model ---------------------------------------------------------------
+
+
+m_model <- bf(alphaMu | se(alphaSE, sigma = TRUE) ~ 1 + (1 | id)) + 
+  bf(betaMu | se(betaSE, sigma = TRUE) ~ 1 + (1 | id)) + 
+  bf(cMu | se(cSE, sigma = TRUE) ~ 1 + (1 | id)) + 
+  bf(lambdaMu | se(lambdaSE, sigma = TRUE) ~ 1 + (1 | id)) + 
+  bf(phiMu | se(phiSE, sigma = TRUE) ~ 1 + (1 | id)) + 
+  bf(tauMu | se(tauSE, sigma = TRUE) ~ 1 + (1 | id)) + 
+  bf(deltaMu | se(deltaSE, sigma = TRUE) ~ 1 + (1 | id)) +
+  bf(sigmaMu | se(sigmaSE, sigma = TRUE) ~ 1 + (1 | id)) +
+  set_rescor(TRUE)
+
+get_prior(m_model, id_data)
 
 priors <- c(
-  prior(normal(-400, 100), class = "Intercept", resp = "beta", ub = 0),
-  prior(normal(1, 0.5), class = "Intercept", resp = "c", lb = 0),
-  prior(normal(-2.3, 0.5), class = "Intercept", resp = "lambda", ub = 0),
-  prior(normal(-1.2, 0.5), class = "Intercept", resp = "phi", ub = 0),
-  prior(normal(5, 1), class = "Intercept", resp = "tau", lb = 0),
-  prior(normal(5, 1), class = "Intercept", resp = "delta", lb = 0)
+  ## Main effects
+  prior(normal(850, 10), class = "Intercept", resp = "alphaMu", lb = 0),
+  prior(normal(-400, 50), class = "Intercept", resp = "betaMu", ub = 0),
+  prior(normal(0.8, 0.1), class = "Intercept", resp = "cMu", lb = 0),
+  prior(normal(-3.0, 0.5), class = "Intercept", resp = "lambdaMu", ub = 0),
+  prior(normal(-2.5, 0.5), class = "Intercept", resp = "phiMu", ub = 0),
+  prior(normal(6.5, 0.5), class = "Intercept", resp = "tauMu", lb = 0),
+  prior(normal(3.5, 0.5), class = "Intercept", resp = "deltaMu", lb = 0),
+  prior(normal(0.3, 0.5), class = "Intercept", resp = "sigmaMu", lb = 0),
+  ## Random effects
+  prior(normal(10, 10), class = "sd", resp = "alphaMu", lb = 0),
+  prior(normal(50, 50), class = "sd", resp = "betaMu", lb = 0),
+  prior(normal(0.1, 0.1), class = "sd", resp = "cMu", lb = 0),
+  prior(normal(0.5, 0.5), class = "sd", resp = "lambdaMu", lb = 0),
+  prior(normal(0.5, 0.5), class = "sd", resp = "phiMu", lb = 0),
+  prior(normal(0.5, 0.5), class = "sd", resp = "tauMu", lb = 0),
+  prior(normal(0.5, 0.5), class = "sd", resp = "deltaMu", lb = 0),
+  prior(normal(0.5, 0.5), class = "sd", resp = "sigmaMu", lb = 0)
 )
 
-fit_model <- function(formula, data, priors) {
-  brm(formula = formula,
-      data = data,
-      prior = priors,
-      family = gaussian(),
-      chains = 4, cores = 4,
-      control = list(adapt_delta = .99,
-                     max_treedepth = 50))
-}
+m_fit <- brm(formula = m_model,
+    data = id_data,
+    prior = priors,
+    family = gaussian(),
+    chains = 5, cores = 5,
+    iter = 10000, warmup = 5000,
+    control = list(adapt_delta = .99,
+                   max_treedepth = 50)
+    )
 
-m_fit_alpha <- fit_model(
-  formula = m_mod_alpha, 
-  data = posteriors, 
-  priors = c(
-    prior(normal(800, 100), class = "Intercept", lb = 0),
-    prior(normal(0, 100), class = "sd", lb = 0),
-    prior(normal(0, 100), class = "sigma", lb = 0)
-  )
-)
-
-loo(m_fit_alpha)
-performance::rmse(m_fit_alpha)
-predict()
-
-library(ggplot2)
+loo(m_fit)
 
 
 as_draws_df(m_fit_alpha) |> 

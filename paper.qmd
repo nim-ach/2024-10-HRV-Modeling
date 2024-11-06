@@ -243,8 +243,19 @@ Despite the limited sensitivity of $\lambda$ and $\phi$ to mean RRi, these param
 
 The sample used to assess RRi dynamics consists of a group of 272 subjects selected from a local community of elderly individuals. The sample characteristics can be seen in [Table 2](#tbl-sample-characteristics)
 
-<!--- TABLE 2 HERE --->
-[**Table 2**]{#tbl-sample-characteristics}. Sample characteristics from which, continuous RRi monitoring data was collected during a rest-exercise-rest protocol. 
+|Characteristic |Overall        |Female         |Male           |
+|:--------------|:--------------|:--------------|:--------------|
+|Sex            |—              |217 (79.8%)    |55 (20.2%)     |
+|Age            |71.14 ± 6.03   |70.73 ± 6.27   |72.73 ± 4.7    |
+|SBP (mm hg)    |130.23 ± 17.07 |129.58 ± 17.37 |132.8 ± 15.69  |
+|DBP (mm hg)    |77.1 ± 9.58    |76.68 ± 9.83   |78.75 ± 8.4    |
+|MAP (mm hg)    |94.81 ± 10.69  |94.31 ± 10.95  |96.76 ± 9.45   |
+|PP (mm hg)     |53.14 ± 14.07  |52.9 ± 14.26   |54.05 ± 13.38  |
+|BMI            |30.66 ± 5.43   |30.7 ± 5.64    |30.53 ± 4.53   |
+|Weight (kg)    |75.06 ± 14.23  |73.88 ± 14.09  |79.69 ± 13.95  |
+|Height (cm)    |156.56 ± 9.18  |155.29 ± 8.46  |161.55 ± 10.24 |
+
+[**Table 2**]{#tbl-sample-characteristics}. Sample characteristics from which, continuous RRi monitoring data was collected during a rest-exercise-rest protocol. Data is presented as Mean ± SD.
 
 ```{r}
 data("rri_data")
@@ -254,7 +265,11 @@ Initial exploration of RRi dynamics using two-dimensional density kernel estimat
 
 ![](figures/2d-density-kernel.png)
 
-[**Figure 5**]{#fig-2d-kernel-density}. Upper panel shows the mean and standard deviation (SD) from each of the subject's RRi recordings, used for the standardization process. Lower panel indicate the 2D kernel density of standardized RRi dynamics over time from a sample of individuals subjected to a rest-exercise-rest protocol. Darker colors indicate greater probability density. The contrary can be said about lighter colors.
+[**Figure 5**]{#fig-2d-kernel-density}. Left panel shows the mean and standard deviation (SD) from each of the subject's RRi recordings, used for the standardization process. Right panel indicate the 2D kernel density of standardized RRi dynamics over time from a sample of individuals subjected to a rest-exercise-rest protocol. Darker colors indicate greater probability density. The contrary can be said about lighter colors.
+
+### Individual-level estimates
+
+
 
 # Discussion
 
