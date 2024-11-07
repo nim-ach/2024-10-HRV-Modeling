@@ -247,10 +247,10 @@ The sample used to assess RRi dynamics consists of a group of 272 subjects selec
 |:--------------|:--------------|:--------------|:--------------|
 |Sex            |—              |217 (79.8%)    |55 (20.2%)     |
 |Age            |71.14 ± 6.03   |70.73 ± 6.27   |72.73 ± 4.7    |
-|SBP (mm hg)    |130.23 ± 17.07 |129.58 ± 17.37 |132.8 ± 15.69  |
-|DBP (mm hg)    |77.1 ± 9.58    |76.68 ± 9.83   |78.75 ± 8.4    |
-|MAP (mm hg)    |94.81 ± 10.69  |94.31 ± 10.95  |96.76 ± 9.45   |
-|PP (mm hg)     |53.14 ± 14.07  |52.9 ± 14.26   |54.05 ± 13.38  |
+|SBP (mm Hg)    |130.23 ± 17.07 |129.58 ± 17.37 |132.8 ± 15.69  |
+|DBP (mm Hg)    |77.1 ± 9.58    |76.68 ± 9.83   |78.75 ± 8.4    |
+|MAP (mm Hg)    |94.81 ± 10.69  |94.31 ± 10.95  |96.76 ± 9.45   |
+|PP (mm Hg)     |53.14 ± 14.07  |52.9 ± 14.26   |54.05 ± 13.38  |
 |BMI            |30.66 ± 5.43   |30.7 ± 5.64    |30.53 ± 4.53   |
 |Weight (kg)    |75.06 ± 14.23  |73.88 ± 14.09  |79.69 ± 13.95  |
 |Height (cm)    |156.56 ± 9.18  |155.29 ± 8.46  |161.55 ± 10.24 |
@@ -297,7 +297,7 @@ Another area for future research is multi-session modeling to account for cumula
 
 # Conclusion
 
-In summary, this study introduces a non-linear model of RRi dynamics that captures complex, real-time fluctuations reflecting the autonomic nervous system’s response to exercise and recovery. By focusing on RRi, the model offers enhanced sensitivity to physiological changes, making it well-suited for personalized applications in clinical and athletic settings. The use of Sobol sensitivity analysis enabled a time-dependent interpretation of parameter effects, underscoring the model’s adaptability to diverse physiological states and exercise intensities. Nevertheless, further validation, particularly with multi-session and wearable-based applications, is essential to establish the model’s robustness and applicability in dynamic, real-world environments. By advancing precision in cardiovascular monitoring, this model holds promise for supporting individualized health and performance interventions, contributing meaningfully to the fields of computational physiology and applied health sciences.
+In summary, this study introduces a non-linear model of RRi dynamics that captures complex, real-time fluctuations reflecting the autonomic nervous system's response to exercise and recovery. By focusing on RRi, the model offers enhanced sensitivity to physiological changes, making it well-suited for personalized applications in clinical and athletic settings. The use of Sobol sensitivity analysis enabled a time-dependent interpretation of parameter effects, underscoring the model’s adaptability to diverse physiological states and exercise intensities. Nevertheless, further validation, particularly with multi-session and wearable-based applications, is essential to establish the model’s robustness and applicability in dynamic, real-world environments. By advancing precision in cardiovascular monitoring, this model holds promise for supporting individualized health and performance interventions, contributing meaningfully to the fields of computational physiology and applied health sciences.
 
 # Authors' Contributions
 
