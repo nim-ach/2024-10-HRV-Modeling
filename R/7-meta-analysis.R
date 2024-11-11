@@ -15,28 +15,19 @@ id_data <- fread(file = "models/id_level_posterior.csv")
 
 ## Custom functions
 fit_model <- function(model, priors) {
-  file = paste0("models/group_level/",
-                deparse(substitute(model)),
-                ".RDS")
-  
-  if (file.exists(file)) {
-    m_fit <- readRDS(file)
-  } else {
-    m_fit <- brms::brm(formula = model,
-                       data = id_data,
-                       prior = priors,
-                       family = gaussian(),
-                       chains = 5, cores = 5, seed = 1234,
-                       iter = 10000, warmup = 5000,
-                       control = list(adapt_delta = .99,
-                                      max_treedepth = 50))
-    
-    saveRDS(object = m_fit, file = file, compress = "xz")
-  }
-  
-  return(m_fit)
+  brms::brm(formula = model,
+            data = id_data,
+            prior = priors,
+            family = gaussian(),
+            chains = 5, cores = 5, seed = 1234,
+            iter = 10000, warmup = 5000,
+            control = list(adapt_delta = .99,
+                           max_treedepth = 50),
+            file = paste0("models/group_level/",
+                          deparse(substitute(model)),
+                          ".RDS")
+  )
 }
-
 
 # Fit model ---------------------------------------------------------------
 
@@ -80,9 +71,9 @@ m_delta_prior <-
   prior(normal(1.5, 0.1), class = "sigma", lb = 0) +
   prior(normal(0.5, 0.5), class = "sd", lb = 0)
 m_sigma_prior <-
-  prior(normal(0.3, 0.05), class = "Intercept", lb = 0) +
-  prior(normal(0.05, 0.01), class = "sigma", lb = 0) +
-  prior(normal(0.05, 0.01), class = "sd", lb = 0)
+  prior(normal(30, 5), class = "Intercept", lb = 0) +
+  prior(normal(10, 1), class = "sigma", lb = 0) +
+  prior(normal(5, 1), class = "sd", lb = 0)
 
 m_alpha_fit <- fit_model(m_alpha_model, m_alpha_prior)
 m_beta_fit <- fit_model(m_beta_model, m_beta_prior)
@@ -92,3 +83,20 @@ m_phi_fit <- fit_model(m_phi_model, m_phi_prior)
 m_tau_fit <- fit_model(m_tau_model, m_tau_prior)
 m_delta_fit <- fit_model(m_delta_model, m_delta_prior)
 m_sigma_fit <- fit_model(m_sigma_model, m_sigma_prior)
+
+models <- list(
+  alpha = m_alpha_fit, beta = m_beta_fit,
+  c = m_c_fit, lambda = m_lambda_fit,
+  phi = m_phi_fit, tau = m_tau_fit,
+  delta = m_delta_fit, sigma = m_sigma_fit
+)
+
+m_fits_df <- lapply(models, as_draws_df) |> 
+  rbindlist(idcol = "Parameter")
+
+m_fits_df[, Parameter := factor(
+  x = Parameter, 
+  levels = c("alpha", "beta", "c", "lambda", "phi", "tau", "delta", "sigma")
+)]
+
+fwrite(m_fits_df, file = "models/group_level_posterior.csv")

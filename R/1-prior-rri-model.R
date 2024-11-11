@@ -19,11 +19,10 @@ RRi_model <- function(t, alpha, beta, c, lambda, phi, tau, delta) {
 ## Plot posterior density of a chosen parameter
 plot_post_dens <- function(posterior, x, xlab) {
   ggplot(posterior, aes(x = {{x}})) +
-    geom_histogram(aes(y = after_stat(density)), 
-                   col = "darkblue", fill = "lightblue", bins = 20) +
-    stat_density(outline.type = "both", fill = NA, 
-                 col = "gray20", adjust = 1.5,) +
-    scale_y_continuous(expand = c(0,0,0.05,0), breaks = NULL, name = NULL) +
+    ggdist::stat_slabinterval(
+      fill = "lightblue",
+      trim = FALSE, density = "unbounded") +
+    scale_y_continuous(expand = c(0.1,0,0.05,0), breaks = NULL, name = NULL) +
     scale_x_continuous(expand = c(0,0)) +
     labs(x = xlab) +
     theme_classic(base_size = 12) +
