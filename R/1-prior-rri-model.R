@@ -20,12 +20,12 @@ RRi_model <- function(t, alpha, beta, c, lambda, phi, tau, delta) {
 plot_post_dens <- function(posterior, x, xlab) {
   ggplot(posterior, aes(x = {{x}})) +
     ggdist::stat_slabinterval(
-      fill = "lightblue",
+      fill = "gray",
       trim = FALSE, density = "unbounded") +
     scale_y_continuous(expand = c(0.1,0,0.05,0), breaks = NULL, name = NULL) +
     scale_x_continuous(expand = c(0,0)) +
     labs(x = xlab) +
-    theme_classic(base_size = 12) +
+    theme_classic(base_line_size = 1/4, base_size = 12) +
     theme(axis.text = element_text(size = rel(.8)))
 }
 
@@ -93,12 +93,12 @@ pred <- predict(
 )
 
 fig_a <- ggplot(pred, aes(time_points, Estimate)) +
-  geom_ribbon(aes(ymin = Q2.5, ymax = Q97.5), fill = "#E3F2FDFF") +
-  geom_ribbon(aes(ymin = Q10, ymax = Q90), fill = "#BADEFAFF") +
-  geom_ribbon(aes(ymin = Q20, ymax = Q80), fill = "#90CAF8FF") +
-  geom_line(show.legend = FALSE, linewidth = 1, col = "blue4") +
+  geom_ribbon(aes(ymin = Q2.5, ymax = Q97.5), fill = "gray90") +
+  geom_ribbon(aes(ymin = Q10, ymax = Q90), fill = "gray75") +
+  geom_ribbon(aes(ymin = Q20, ymax = Q80), fill = "gray60") +
+  geom_line(show.legend = FALSE, linewidth = 1, col = "gray10") +
   labs(x = "Time (minutes)", y = "Predicted RRi") +
-  theme_classic(base_size = 12) +
+  theme_classic(base_line_size = 1/4, base_size = 12) +
   theme(axis.text = element_text(size = rel(.8)))
 
 posterior <- as_draws_df(m_prior_only) |> as.data.table()
@@ -112,13 +112,14 @@ fig_b6 <- plot_post_dens(posterior, b_tau_Intercept, expression(tau))
 fig_b7 <- plot_post_dens(posterior, b_delta_Intercept, expression(delta))
 
 figure <- ggpubr::ggarrange(
-  ggpubr::ggarrange(fig_b1, fig_b2, fig_b3, nrow = 1, align = "hv"),
   fig_a,
-  ggpubr::ggarrange(fig_b4, fig_b5, fig_b6, fig_b7, nrow = 1, align = "hv"),
-  nrow = 3, heights = c(1,2,1)
+  ggpubr::ggarrange(fig_b1, fig_b2, fig_b3, fig_b4, nrow = 4,
+                    fig_b5, fig_b6, fig_b7, ncol = 2, align = "hv"),
+  nrow = 1, ncol = 2, widths = c(2,1),
+  labels = c("A.", "B."), font.label = list(size = 12)
 )
 
 ggsave("figures/prior-model.pdf", figure, "pdf", 
-       width = 7, height = 5, units = "in")
+       width = 7, height = 4, units = "in")
 ggsave("figures/prior-model.png", figure, "png", 
-       width = 7, height = 5, units = "in", dpi = 500)
+       width = 7, height = 4, units = "in", dpi = 500)

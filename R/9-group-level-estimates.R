@@ -19,15 +19,14 @@ m_fits_df[, Parameter := factor(Parameter,
 f_1 <- ggplot(m_fits_df, aes(Parameter, b_Intercept)) +
   facet_wrap(~ Parameter, nrow = 1, ncol = 8, scales = "free",
              labeller = label_parsed) +
-  ggdist::stat_halfeye(aes(fill = Parameter),
+  ggdist::stat_halfeye(fill = "gray",
                        show.legend = FALSE,
                        normalize = "panels",
                        trim = FALSE, density = "unbounded") +
   scale_x_discrete(expand = c(0.2,0,0.2,0), 
                    name = NULL, breaks = NULL) +
   scale_y_continuous(name = expression(symbol(E)~"["*theta*"]")) +
-  ggsci::scale_fill_observable() +
-  theme_classic(base_size = 12) +
+  theme_classic(base_line_size = 1/4, base_size = 12) +
   theme(strip.background = element_rect(fill = "grey90", colour = NA),
         axis.text = element_text(size = rel(.8)))
 
@@ -36,7 +35,7 @@ f_2 <-
   ggplot(aes(V1, Parameter)) +
   facet_wrap(~ Parameter, nrow = 1, ncol = 2, scales = "free",
              labeller = label_parsed) +
-  ggdist::stat_halfeye(aes(fill = Parameter),
+  ggdist::stat_halfeye(fill = "gray",
                        show.legend = FALSE,
                        normalize = "panels",
                        trim = FALSE, density = "unbounded") +
@@ -46,13 +45,14 @@ f_2 <-
                      labels = scales::label_percent(),
                      n.breaks = 4,
                      expand = c(0.2,0)) +
-  ggsci::scale_fill_observable() +
-  theme_classic(base_size = 12) +
+  theme_classic(base_line_size = 1/4, base_size = 12) +
   theme(strip.background = element_rect(fill = "grey90", colour = NA),
         axis.text = element_text(size = rel(.8)))
 
 figure <- ggpubr::ggarrange(
-  f_1, f_2, ncol = 1, nrow = 2, heights = c(7,3)
+  f_1, f_2, ncol = 1, nrow = 2, heights = c(7,3),
+  labels = c("A.", "B."), font.label = list(size = 12),
+  vjust = c(1.5, 2.5)
 )
 
 ggsave("figures/group-level-estimates.pdf", figure, "pdf", 

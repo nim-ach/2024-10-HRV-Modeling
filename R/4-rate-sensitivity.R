@@ -91,12 +91,12 @@ sim_data[, phi := factor(phi,
 
 figure <- ggplot(sim_data, aes(time, hrv)) +
   facet_wrap(~ phi, labeller = labeller(phi = label_parsed)) +
-  geom_line(aes(col = as.factor(x = lambda), group = id), linewidth = 0.7) +
-  geom_vline(xintercept = c(5,7), color = "gray50", linewidth = .25) +
+  geom_line(aes(col = as.factor(x = lambda), group = id), linewidth = 1/4) +
+  geom_vline(xintercept = c(5,7), color = "gray50", linewidth = 1/4, linetype = 2) +
   scale_y_continuous(breaks = c(500, 600, 700, 800)) +
   scale_alpha_manual(values = c(1, .85, .7, .55)) +
-  ggsci::scale_color_observable() +
-  theme_classic(base_size = 12) +
+  scale_color_grey(start = 0, end = 0.8) +
+  theme_classic(base_line_size = 1/4, base_size = 12) +
   theme(strip.background = element_rect(fill = "grey90", colour = NA),
         legend.position = "right",
         axis.text = element_text(size = rel(.8))) +

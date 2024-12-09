@@ -97,6 +97,6 @@ m_fits_df <- lapply(models, as_draws_df) |>
 m_fits_df[, Parameter := factor(
   x = Parameter, 
   levels = c("alpha", "beta", "c", "lambda", "phi", "tau", "delta", "sigma")
-)]
+)] 
 
 fwrite(m_fits_df, file = "models/group_level_posterior.csv")

@@ -43,7 +43,7 @@ f_1 <- ggplot(error_data, aes(mape, rmse)) +
                      breaks = c(1,2,4,9,20)/100,
                      name = "MAPE (log-scale)", expand = c(0,0.05),
                      transform = "log10") +
-  theme_classic(base_size = 12) +
+  theme_classic(base_line_size = 1/4, base_size = 12) +
   theme(axis.text = element_text(size = rel(.8)))
 
 error_long <- melt.data.table(boot_error, id.vars = "mc_sample")
@@ -51,38 +51,37 @@ error_long[, variable := `levels<-`(variable, c("MAPE", "RMSE", "R^2"))]
 
 f_2a <- ggplot(error_long[variable == "MAPE"], aes(variable, value)) +
   facet_wrap(~ variable, scales = "free") +
-  ggdist::stat_halfeye(fill = "#4269D0FF") +
+  ggdist::stat_halfeye(fill = "gray") +
   scale_y_continuous(name = NULL, expand = c(0.1,0),
                      labels = scales::label_percent(),
                      n.breaks = 7) +
   scale_x_discrete(name = NULL, breaks = NULL, 
                    expand = c(0.1,0,0,0)) +
-  theme_classic(base_size = 12) +
+  theme_classic(base_line_size = 1/4, base_size = 12) +
   theme(strip.background = element_rect(fill = "grey90", colour = NA),
         axis.text = element_text(size = rel(.8)),
         plot.margin = margin(0.1,0.1,0.1,0.1,"in"))
 
 f_2b <- ggplot(error_long[variable == "RMSE"], aes(variable, value)) +
   facet_wrap(~ variable, scales = "free") +
-  ggdist::stat_halfeye(fill = "#EFB118FF") +
+  ggdist::stat_halfeye(fill = "gray") +
   scale_y_continuous(name = NULL, expand = c(0.1,0),
                      n.breaks = 6) +
   scale_x_discrete(name = NULL, breaks = NULL, 
                    expand = c(0.1,0,0,0)) +
-  theme_classic(base_size = 12) +
+  theme_classic(base_line_size = 1/4, base_size = 12) +
   theme(strip.background = element_rect(fill = "grey90", colour = NA),
         axis.text = element_text(size = rel(.8)),
         plot.margin = margin(0.1,0.1,0.1,0.1,"in"))
 
 f_2c <- ggplot(error_long[variable == "R^2"], aes(variable, value)) +
   facet_wrap(~ variable, scales = "free", labeller = label_parsed) +
-  ggdist::stat_halfeye(fill = "#FF725CFF") +
+  ggdist::stat_halfeye(fill = "gray") +
   scale_y_continuous(name = NULL, expand = c(0.1,0),
-                     n.breaks = 6,
-                     labels = scales::label_percent()) +
+                     n.breaks = 6) +
   scale_x_discrete(name = NULL, breaks = NULL, 
                    expand = c(0.1,0,0,0)) +
-  theme_classic(base_size = 12) +
+  theme_classic(base_line_size = 1/4, base_size = 12) +
   theme(strip.background = element_rect(fill = "grey90", colour = NA),
         axis.text = element_text(size = rel(.8)),
         plot.margin = margin(0.1,0.1,0.1,0.1,"in"))
@@ -92,19 +91,19 @@ f_3 <- ggplot(acf_data, aes(lag, acf)) +
   scale_y_continuous(expand = c(0,0.05), limits = c(-1,1),
                      name = "Partial ACF") +
   scale_x_continuous(name = "Lag", breaks = c(1:4, c(1:6)*5), limits = c(1,30)) +
-  scale_color_brewer(labels = c("95%", "80%", "50%"),
-                     name = "CI") +
+  scale_color_grey(labels = c("95%", "80%", "50%"),
+                     name = "CI", start = .8, end = .2) +
   geom_hline(yintercept = c(-.1, .1), linetype = 2, col = "gray20", linewidth = .3) +
   geom_hline(yintercept = 0, linetype = 1, col = "gray0", linewidth = .3) +
-  theme_classic(base_size = 12) +
+  theme_classic(base_line_size = 1/4, base_size = 12) +
   theme(axis.text = element_text(size = rel(.8)))
 
 figure <- 
   ggpubr::ggarrange(
     ggpubr::ggarrange(
       ggpubr::ggarrange(f_2a, f_2b, f_2c, nrow = 1, ncol = 3),
-      f_1, ncol = 2, nrow = 1
-    ), f_3, ncol = 1, nrow = 2, heights = c(3,2)
+      f_1, ncol = 2, nrow = 1, labels = c("A.","B."), font.label = list(size = 12)
+    ), f_3, ncol = 1, nrow = 2, heights = c(3,2), labels = c("","C."), font.label = list(size = 12)
   )
 
 
