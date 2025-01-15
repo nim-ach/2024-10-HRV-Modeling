@@ -35,7 +35,7 @@ boot_error[, mc_sample := seq_len(.N)]
 # -------------------------------------------------------------------------
 
 f_1 <- ggplot(error_data, aes(mape, rmse)) +
-  geom_point(col = "gray20", alpha = .5) +
+  geom_point(col = "gray20", cex = 3/4) +
   scale_y_continuous(name = "RMSE (log-scale)", expand = c(0,0.05),
                      breaks = c(1,2,4,9,20)*10,
                      transform = "log10") +
@@ -108,7 +108,9 @@ figure <-
 
 
 
-ggsave("figures/error-estimates.pdf", figure, "pdf", 
+ggsave("figures/figure-6.pdf", figure, "pdf", 
        width = 7, height = 5, units = "in")
-ggsave("figures/error-estimates.png", figure, "png", 
+ggsave("figures/figure-6.eps", figure, "eps", 
+       width = 7, height = 5, units = "in")
+ggsave("figures/figure-6.png", figure, "png", 
        width = 7, height = 5, units = "in", dpi = 500)

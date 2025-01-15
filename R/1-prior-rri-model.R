@@ -119,7 +119,9 @@ figure <- ggpubr::ggarrange(
   labels = c("A.", "B."), font.label = list(size = 12)
 )
 
-ggsave("figures/prior-model.pdf", figure, "pdf", 
+ggsave("figures/figure-4.pdf", figure, "pdf", 
        width = 7, height = 4, units = "in")
-ggsave("figures/prior-model.png", figure, "png", 
+ggsave("figures/figure-4.eps", figure, "eps", 
+       width = 7, height = 4, units = "in")
+ggsave("figures/figure-4.png", figure, "png", 
        width = 7, height = 4, units = "in", dpi = 500)

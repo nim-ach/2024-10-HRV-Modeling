@@ -55,9 +55,11 @@ figure <- ggpubr::ggarrange(
   vjust = c(1.5, 2.5)
 )
 
-ggsave("figures/group-level-estimates.pdf", figure, "pdf", 
+ggsave("figures/figure-5.pdf", figure, "pdf", 
        width = 7, height = 5, units = "in")
-ggsave("figures/group-level-estimates.png", figure, "png", 
+ggsave("figures/figure-5.eps", figure, "eps", 
+       width = 7, height = 5, units = "in")
+ggsave("figures/figure-5.png", figure, "png", 
        width = 7, height = 5, units = "in", dpi = 500)
 
 # Plot data ---------------------------------------------------------------

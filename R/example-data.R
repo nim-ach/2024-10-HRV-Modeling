@@ -17,8 +17,10 @@ figure <- ggplot(rri_data[id %in% c(1:3,7:9)], aes(time, rr_denoised)) +
   theme(strip.background = element_blank(), strip.text = element_blank())
   
 ## Save the plot
-ggsave("figures/example-data.pdf", figure, "pdf", 
+ggsave("figures/figure-1.pdf", figure, "pdf", 
        width = 7, height = 5, units = "in")
-ggsave("figures/example-data.png", figure, "png", 
+ggsave("figures/figure-1.eps", figure, "eps", 
+       width = 7, height = 5, units = "in")
+ggsave("figures/figure-1.png", figure, "png", 
        width = 7, height = 5, units = "in", dpi = 500)
   

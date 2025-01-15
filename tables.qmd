@@ -1,0 +1,59 @@
+---
+title: ""
+format: 
+  docx:
+    reference-doc: "ref.docx"
+bibliography: "misc/ref.bib"
+csl: "misc/scientific-reports.csl"
+editor_options: 
+  chunk_output_type: console
+execute: 
+  echo: false
+  warning: false
+  error: false
+---
+
+# Tables
+
+|Characteristic |Overall        |Female         |Male           |
+|:--------------|--------------:|--------------:|--------------:|
+|Sex            |—              |217 (79.8%)    |55 (20.2%)     |
+|Age            |71.14 ± 6.03   |70.73 ± 6.27   |72.73 ± 4.7    |
+|SBP (mm hg)    |130.23 ± 17.07 |129.58 ± 17.37 |132.8 ± 15.69  |
+|DBP (mm hg)    |77.1 ± 9.58    |76.68 ± 9.83   |78.75 ± 8.4    |
+|MAP (mm hg)    |94.81 ± 10.69  |94.31 ± 10.95  |96.76 ± 9.45   |
+|PP (mm hg)     |53.14 ± 14.07  |52.9 ± 14.26   |54.05 ± 13.38  |
+|BMI            |30.66 ± 5.43   |30.7 ± 5.64    |30.53 ± 4.53   |
+|Weight (kg)    |75.06 ± 14.23  |73.88 ± 14.09  |79.69 ± 13.95  |
+|Height (cm)    |156.56 ± 9.18  |155.29 ± 8.46  |161.55 ± 10.24 |
+
+[**Table 1**]{#tbl-sample-characteristics}. Sample characteristics from which continuous RRi monitoring data was collected during a rest-exercise-rest protocol. Data is presented as Mean ± standard deviation (SD). SBP, systolic blood pressure; DBP, diastolic blood pressure; MAP, mean arterial pressure; PP, pulse pressure; BMI, body mass index.
+
+{{< pagebreak >}}
+
+| Parameter | Estimate^1^ | SE^1^ | Lower^2^ | Upper^2^ |
+|-----|---:|---:|---:|---:|
+| $\alpha$  |  861.78 | 5.73 |  850.57 |  872.85 |
+| $\beta$   | -345.49 | 7.41 | -359.81 | -330.97 |
+| $c$       |    0.84 | 0.01 |    0.82 |    0.86 |
+| $\lambda$ |   -3.05 | 0.06 |   -3.16 |   -2.94 |
+| $\phi$    |   -2.60 | 0.06 |   -2.71 |   -2.48 |
+| $\tau$    |    6.71 | 0.05 |    6.61 |    6.81 |
+| $\delta$  |    3.24 | 0.10 |    3.05 |    3.44 |
+| $\sigma$  |   27.57 | 0.57 |   26.45 |   28.70 |
+
+[**Table 2**]{#tbl-parameters}. Population-parameter values estimated from group-level analysis. ^1^ Estimates and SE are computed as median and mean absolute deviation of the posterior distribution, respectively; ^2^ Lower and Upper bounds from the quantile-based CI~95%~ of the posterior distribution.
+
+{{< pagebreak >}}
+
+|Parameter | Estimate^1^|  SE^1^ | Lower^2^| Upper^2^|
+|:---------|-----------:|-------:|--------:|--------:|
+|$\alpha$  |     0.61329| 0.01756|  0.57887|  0.64771|
+|$\beta$   |     0.06651| 0.00286|  0.06090|  0.07212|
+|$c$       |     0.18939| 0.00815|  0.17342|  0.20536|
+|$\lambda$ |     0.00147| 0.00007|  0.00133|  0.00161|
+|$\phi$    |     0.00160| 0.00008|  0.00144|  0.00176|
+|$\tau$    |     0.04982| 0.00172|  0.04645|  0.05319|
+|$\delta$  |     0.07896| 0.00239|  0.07428|  0.08364|
+
+[**Table 3**]{#tbl-sens-params}. Estimated $S_{\text{ind}}$ of model parameters. Each parameter's $S_{\text{ind}}$ reflects a uniform variation from the 95% CIs of the estimated parameter values.

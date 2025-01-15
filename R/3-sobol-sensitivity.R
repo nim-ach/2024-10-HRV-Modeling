@@ -34,8 +34,8 @@ sobol_sample <- function(n_samples) {
     c = runif(n_samples, min = 0.82, max = 0.86), 
     lambda = runif(n_samples, min = -3.16, max = -2.94), 
     phi = runif(n_samples, min = -2.71, max = -2.48),
-    tau = runif(n_samples, min = 3.05, max = 3.44), 
-    delta = runif(n_samples, min = 1, max = 3)
+    tau = runif(n_samples, min = 6.61, max = 6.81), 
+    delta = runif(n_samples, min = 3.05, max = 3.44)
   )
   
   return(out)
@@ -106,7 +106,7 @@ if (!file.exists("R/sobol-sensitivity.RDS")) { ## Omit computation if already ex
 }
 
 sobol_results[
-  j = list(estimate = median(mean), se = median(se)) |> lapply(round, 5), 
+  j = list(estimate = mean(mean), se = mean(se)) |> lapply(round, 5), 
   by = variable
   ][, `:=`(
     lower = round(estimate - se * qnorm(.975), 5),

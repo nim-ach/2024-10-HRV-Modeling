@@ -50,7 +50,9 @@ figure <- ggpubr::ggarrange(
   hjust = -0.2, vjust = 2
 )
 
-ggsave("figures/2d-density-kernel.pdf", figure, "pdf", 
+ggsave("figures/figure-3.pdf", figure, "pdf", 
        width = 7, height = 4, units = "in")
-ggsave("figures/2d-density-kernel.png", figure, "png", 
+ggsave("figures/figure-3.eps", figure, "eps", 
+       width = 7, height = 4, units = "in")
+ggsave("figures/figure-3.png", figure, "png", 
        width = 7, height = 4, units = "in", dpi = 500)

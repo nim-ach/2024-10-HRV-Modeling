@@ -32,7 +32,9 @@ figure <- ggplot(sim_data, aes(t, RRi)) +
         axis.text = element_text(size = rel(.8))) +
   labs(x = "Time (minutes)", y = "RRi (ms)")
 
-ggsave("figures/model-constituents.pdf", figure, "pdf", 
+ggsave("figures/figure-2.pdf", figure, "pdf", 
        width = 7, height = 4, units = "in")
-ggsave("figures/model-constituents.png", figure, "png", 
+ggsave("figures/figure-2.eps", figure, "eps", 
+       width = 7, height = 4, units = "in")
+ggsave("figures/figure-2.png", figure, "png", 
        width = 7, height = 4, units = "in", dpi = 500)
