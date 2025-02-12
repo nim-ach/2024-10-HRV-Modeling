@@ -93,7 +93,7 @@ fwrite(id_data, file = "models/id_level_posterior.csv")
 ## Generate data with estimated parameters and observed data
 long_data <- merge.data.table(
   m_data[, .(id, time, rr_denoised)],
-  id_data[, .SD, .SDcols = id:deltaMu],
+  id_data[, .SD, .SDcols = id:sigmaMu],
   by = "id",
 )
 
@@ -104,6 +104,50 @@ long_data[, pred_rr := RRi_sim(
   lambda = lambdaMu, phi = phiMu,
   tau = tauMu, delta = deltaMu
 ), id]
+
+
+# Re-fit problematic observations -----------------------------------------
+
+check_id <- logical(length = 272)
+for(i in seq_along(unique(error_phase$id))) {
+  long_data[id == i, j = {
+    plot(time, rr_denoised, type = "l", lwd = 1/2)
+    lines(time, pred_rr, type = "l", lwd = 1/2)
+    abline(v = c(tauMu, tauMu + deltaMu), lwd = 1/2, lty = 2)
+  }]
+  cat("Actual: ", i)
+  if (askYesNo(msg = "Todo bien?")) {
+    next
+  } else {
+    check_id[i] <- TRUE
+  }
+}
+
+## Problematic recordings
+ids <- c(19L, 21L, 26L, 27L, 34L, 50L, 52L, 86L, 100L, 102L, 105L, 132L, 
+         135L, 139L, 150L, 154L, 159L, 233L, 246L, 258L)
+
+models <- vector(mode = "list", length = length(ids))
+
+for (i in ids) {
+  print(paste0("Now on id ", i))
+  file <- paste0("models/id_level/m_id_",i,".RDS")
+  unlink(file)
+  
+  models[[i]] <- update(
+    object = m_model,
+    newdata = m_data[id == i],
+    seed = 12345,
+    iter = 10000, warmup = 5000,
+    chains = 5, cores = 5,
+    control = list(adapt_delta = 0.99,
+                   max_treedepth = 50),
+    sample_prior = "no",
+    file = file
+  )
+} 
+
+# Compute error metrics ---------------------------------------------------
 
 ## Compute error metrics
 long_data[, error := rr_denoised - pred_rr, id]

@@ -13,16 +13,16 @@ execute:
   error: false
 ---
 
-**Title**: Enhancing Cardiovascular Monitoring: A Non-Linear Approach to RR Interval Dynamics in Exercise and Recovery.
+**Title**: Enhancing Cardiovascular Monitoring: A Non-Linear Model for Characterizing RR Interval Fluctuations in Exercise and Recovery.
 
-**Authors**: Matías Castillo-Aguilar^1,2^, Diego Mabe-Castro^1,2^, David Medina^4,5^, Cristian Núñez-Espinosa^1,3^\*.
+**Authors**: Matías Castillo-Aguilar^1^, Diego Mabe-Castro^1,2^, David Medina^4,5^, Cristian Núñez-Espinosa^1,3^\*.
 
 ::: {custom-style="Afiliation"}
-^1^ Centro Asistencial Docente e Investigación (CADI-UMAG), University of Magallanes, Punta Arenas, Chile.
+^1^ Centro Asistencial Docente e Investigación (CADI-UMAG), Universidad de Magallanes, Punta Arenas, Chile.
 
-^2^ Kinesiology Department, University of Magallanes, Punta Arenas, Chile.
+^2^ Departamento de Kinesiología, Universidad de Magallanes, Punta Arenas, Chile.
 
-^3^ School of Medicine, University of Magallanes, Punta Arenas, Chile.
+^3^ Escuela de Medicina, Universidad de Magallanes, Punta Arenas, Chile.
 
 ^4^ Departamento de Ingeniería en Computación, Universidad de Magallanes, Punta Arenas, Chile.
 
@@ -32,7 +32,7 @@ execute:
 
 ### \*Correspondence: 
 
-Cristian Núñez-Espinosa, School of Medicine, University of Magallanes, Punta Arenas, Chile. Centro Asistencial de Docencia e Investigación CADI-UMAG, Chile. e-mail: [cristian.nunez\@umag.cl](mailto:cristian.nunez@umag.cl). Address: Avenida Bulnes 01855, Box 113-D. Phone: +56 61 2201411.
+Cristian Núñez-Espinosa, Escuela de Medicina, Universidad de Magallanes, Punta Arenas, Chile. Centro Asistencial de Docencia e Investigación CADI-UMAG, Chile. e-mail: [cristian.nunez\@umag.cl](mailto:cristian.nunez@umag.cl). Address: Avenida Bulnes 01855, Box 113-D. Phone: +56 61 2201411.
 
 {{< pagebreak >}}
 
